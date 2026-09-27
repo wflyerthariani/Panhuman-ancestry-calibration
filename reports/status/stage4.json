@@ -1,0 +1,51 @@
+{
+  "stage": "stage4",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 38.57,
+  "checks": [
+    {
+      "name": "mane_select_transcripts",
+      "ok": true,
+      "detail": "19256 transcripts, 19256 genes"
+    },
+    {
+      "name": "mane_one_transcript_per_gene",
+      "ok": true,
+      "detail": "one MANE Select per gene"
+    },
+    {
+      "name": "mane_cds_multiple_of_3",
+      "ok": true,
+      "detail": "99.9948% of CDS lengths are multiples of 3"
+    },
+    {
+      "name": "scope_genes_found",
+      "ok": true,
+      "detail": "2/2 genes; 32 intervals, 6,768 bp on chr17"
+    },
+    {
+      "name": "reference_chr17",
+      "ok": true,
+      "detail": "length 83,257,441 (GRCh38 83,257,441); alphabet ACGNT"
+    },
+    {
+      "name": "alphamissense_ref_matches_grch38",
+      "ok": true,
+      "detail": "15,032 rows; REF matches reference for 15,032"
+    },
+    {
+      "name": "clinvar_subset",
+      "ok": true,
+      "detail": "release 20260923; 15,315 records (11,046 SNVs); REF matches for 15,315; contigs ['chr17']"
+    },
+    {
+      "name": "disk_budget",
+      "ok": true,
+      "detail": "38.6 MB of 1.0 GB"
+    }
+  ],
+  "notes": "Reference and annotation for scope smoke: ClinVar release 20260923.",
+  "blocked_reason": "",
+  "written_at": "2026-09-27T07:10:12+00:00"
+}

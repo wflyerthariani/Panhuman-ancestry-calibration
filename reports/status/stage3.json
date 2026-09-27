@@ -2,7 +2,7 @@
   "stage": "stage3",
   "status": "pass",
   "scope": "smoke",
-  "disk_used_mb": 8.23,
+  "disk_used_mb": 38.57,
   "checks": [
     {
       "name": "one_label_each",
@@ -47,5 +47,5 @@
   ],
   "notes": "Sample metadata, population mapping and counts (items 4-6). REVIEW STOP: see reports/qc/sample_count_report.md. Review items: Unrelated count 3400 matches Koenig's released unrelated PCA set (3400) but not the n_unrelated column of post_qc_summary.tsv (3376); 25 populations differ.",
   "blocked_reason": "",
-  "written_at": "2026-09-27T06:54:37+00:00"
+  "written_at": "2026-09-27T07:10:17+00:00"
 }

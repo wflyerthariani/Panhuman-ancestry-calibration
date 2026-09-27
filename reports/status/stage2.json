@@ -2,7 +2,7 @@
   "stage": "stage2",
   "status": "pass",
   "scope": "smoke",
-  "disk_used_mb": 0.02,
+  "disk_used_mb": 8.23,
   "checks": [
     {
       "name": "software_manifest",
@@ -22,5 +22,5 @@
   ],
   "notes": "Dataset and software manifest (item 3).",
   "blocked_reason": "",
-  "written_at": "2026-09-27T06:54:31+00:00"
+  "written_at": "2026-09-27T07:05:14+00:00"
 }
