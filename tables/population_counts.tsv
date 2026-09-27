@@ -1,0 +1,89 @@
+level	population_group	original_population	n_in_metadata	n_in_vcf	n_post_qc	n_unrelated	n_related	n_excluded	n_post_qc_hgdp	n_post_qc_1kg	n_post_qc_xx	n_post_qc_xy	koenig_n_post_qc	koenig_n_unrelated	diff_post_qc_vs_koenig	diff_unrelated_vs_koenig_summary
+total			4150	4150	4094	3400	694	56	928	3166	1896	2198	4094	3376	0	24
+group	AFR		1003	1003	989	753	236	14	110	879	445	544	989	755	0	-2
+group	AMR		552	552	549	395	154	3	62	487	304	245	549	396	0	-1
+group	CSA		790	790	782	683	99	8	183	599	303	479	782	671	0	12
+group	EAS		825	825	816	727	89	9	233	583	361	455	816	723	0	4
+group	EUR		788	788	770	665	105	18	152	618	386	384	770	663	0	2
+group	MID		162	162	158	150	8	4	158	0	86	72	158	140	0	10
+group	OCE		30	30	30	27	3	0	30	0	11	19	30	28	0	-1
+population	AFR	ACB	116	116	114	94	20	2	0	114	57	57	114	94	0	0
+population	AFR	ASW	74	74	71	53	18	3	0	71	38	33	71	52	0	1
+population	AFR	BantuKenya	12	12	12	10	2	0	12	0	1	11	12	10	0	0
+population	AFR	BantuSouthAfrica	8	8	8	8	0	0	8	0	0	8	8	8	0	0
+population	AFR	Biaka	26	26	26	22	4	0	26	0	0	26	26	22	0	0
+population	AFR	ESN	149	149	148	103	45	1	0	148	64	84	148	103	0	0
+population	AFR	GWD	178	178	176	116	60	2	0	176	84	92	176	116	0	0
+population	AFR	LWK	99	99	97	90	7	2	0	97	53	44	97	91	0	-1
+population	AFR	MSL	99	99	98	83	15	1	0	98	49	49	98	83	0	0
+population	AFR	Mandenka	23	23	23	20	3	0	23	0	8	15	23	20	0	0
+population	AFR	Mbuti	14	14	14	10	4	0	14	0	2	12	14	12	0	-2
+population	AFR	San	6	6	6	6	0	0	6	0	0	6	6	6	0	0
+population	AFR	YRI	178	178	175	117	58	3	0	175	79	96	175	117	0	0
+population	AFR	Yoruba	21	21	21	21	0	0	21	0	10	11	21	21	0	0
+population	AMR	CLM	132	132	130	95	35	2	0	130	72	58	130	94	0	1
+population	AMR	Colombian	7	7	7	6	1	0	7	0	5	2	7	3	0	3
+population	AMR	Karitiana	12	12	12	7	5	0	12	0	7	5	12	10	0	-3
+population	AMR	MXL	97	97	97	63	34	0	0	97	54	43	97	63	0	0
+population	AMR	Maya	21	21	21	21	0	0	21	0	19	2	21	19	0	2
+population	AMR	PEL	122	122	122	85	37	0	0	122	69	53	122	85	0	0
+population	AMR	PUR	139	139	138	104	34	1	0	138	68	70	138	104	0	0
+population	AMR	Pima	14	14	14	10	4	0	14	0	6	8	14	11	0	-1
+population	AMR	Surui	8	8	8	4	4	0	8	0	4	4	8	7	0	-3
+population	CSA	BEB	131	131	131	99	32	0	0	131	71	60	131	99	0	0
+population	CSA	Balochi	24	24	23	23	0	1	23	0	0	23	23	23	0	0
+population	CSA	Brahui	25	25	23	23	0	2	23	0	0	23	23	23	0	0
+population	CSA	Burusho	24	24	24	24	0	0	24	0	4	20	24	24	0	0
+population	CSA	GIH	103	103	103	100	3	0	0	103	47	56	103	100	0	0
+population	CSA	Hazara	20	20	20	18	2	0	20	0	0	20	20	16	0	2
+population	CSA	ITU	107	107	106	102	4	1	0	106	45	61	106	102	0	0
+population	CSA	Kalash	23	23	23	21	2	0	23	0	5	18	23	21	0	0
+population	CSA	Makrani	25	25	23	23	0	2	23	0	5	18	23	22	0	1
+population	CSA	PJL	146	146	145	102	43	1	0	145	68	77	145	97	0	5
+population	CSA	Pathan	24	24	24	24	0	0	24	0	5	19	24	24	0	0
+population	CSA	STU	114	114	114	101	13	0	0	114	49	65	114	98	0	3
+population	CSA	Sindhi	24	24	23	23	0	1	23	0	4	19	23	22	0	1
+population	EAS	CDX	93	93	93	90	3	0	0	93	49	44	93	88	0	2
+population	EAS	CHB	103	103	103	103	0	0	0	103	57	46	103	103	0	0
+population	EAS	CHS	163	163	163	103	60	0	0	163	77	86	163	103	0	0
+population	EAS	Cambodian	10	10	10	10	0	0	10	0	4	6	10	9	0	1
+population	EAS	Dai	9	9	9	8	1	0	9	0	3	6	9	9	0	-1
+population	EAS	Daur	10	10	9	9	0	1	9	0	2	7	9	9	0	0
+population	EAS	Han	33	33	33	33	0	0	33	0	18	15	33	33	0	0
+population	EAS	Hezhen	9	9	9	8	1	0	9	0	3	6	9	8	0	0
+population	EAS	JPT	104	104	102	102	0	2	0	102	46	56	102	102	0	0
+population	EAS	Japanese	29	29	29	28	1	0	29	0	8	21	29	29	0	-1
+population	EAS	KHV	122	122	122	101	21	0	0	122	62	60	122	101	0	0
+population	EAS	Lahu	8	8	8	8	0	0	8	0	1	7	8	5	0	3
+population	EAS	Miao	10	10	10	10	0	0	10	0	3	7	10	10	0	0
+population	EAS	Mongolian	10	10	10	10	0	0	10	0	3	7	10	10	0	0
+population	EAS	Naxi	9	9	8	7	1	1	8	0	2	6	8	7	0	0
+population	EAS	NorthernHan	10	10	10	10	0	0	10	0	2	8	10	10	0	0
+population	EAS	Oroqen	9	9	8	8	0	1	8	0	3	5	8	8	0	0
+population	EAS	She	10	10	10	9	1	0	10	0	3	7	10	9	0	0
+population	EAS	Tu	10	10	10	10	0	0	10	0	3	7	10	10	0	0
+population	EAS	Tujia	10	10	10	10	0	0	10	0	1	9	10	10	0	0
+population	EAS	Uygur	10	10	6	6	0	4	6	0	2	4	6	6	0	0
+population	EAS	Xibo	9	9	9	9	0	0	9	0	1	8	9	9	0	0
+population	EAS	Yakut	25	25	25	25	0	0	25	0	7	18	25	25	0	0
+population	EAS	Yi	10	10	10	10	0	0	10	0	1	9	10	10	0	0
+population	EUR	Adygei	17	17	17	17	0	0	17	0	10	7	17	17	0	0
+population	EUR	Basque	24	24	22	22	0	2	22	0	7	15	22	22	0	0
+population	EUR	BergamoItalian	12	12	11	11	0	1	11	0	4	7	11	11	0	0
+population	EUR	CEU	179	179	176	121	55	3	0	176	89	87	176	120	0	1
+population	EUR	FIN	99	99	98	98	0	1	0	98	60	38	98	98	0	0
+population	EUR	French	27	27	27	27	0	0	27	0	16	11	27	27	0	0
+population	EUR	GBR	91	91	90	88	2	1	0	90	44	46	90	87	0	1
+population	EUR	IBS	157	157	151	104	47	6	0	151	75	76	151	104	0	0
+population	EUR	Orcadian	15	15	15	14	1	0	15	0	8	7	15	14	0	0
+population	EUR	Russian	25	25	25	25	0	0	25	0	9	16	25	25	0	0
+population	EUR	Sardinian	27	27	27	27	0	0	27	0	12	15	27	27	0	0
+population	EUR	TSI	107	107	103	103	0	4	0	103	50	53	103	103	0	0
+population	EUR	Tuscan	8	8	8	8	0	0	8	0	2	6	8	8	0	0
+population	MID	Bedouin	46	46	45	45	0	1	45	0	19	26	45	42	0	3
+population	MID	Druze	42	42	42	40	2	0	42	0	30	12	42	35	0	5
+population	MID	Mozabite	28	28	26	25	1	2	26	0	7	19	26	25	0	0
+population	MID	Palestinian	46	46	45	40	5	1	45	0	30	15	45	38	0	2
+population	OCE	Bougainville	13	13	13	10	3	0	13	0	7	6	13	11	0	-1
+population	OCE	PapuanHighlands	9	9	9	9	0	0	9	0	3	6	9	9	0	0
+population	OCE	PapuanSepik	8	8	8	8	0	0	8	0	1	7	8	8	0	0

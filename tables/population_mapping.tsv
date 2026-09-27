@@ -1,0 +1,81 @@
+original_population	source_dataset	population_group	gnomad_population_label	geographic_region	n_samples_in_metadata	n_post_qc	n_unrelated_post_qc	n_pc_group_discordant	recently_admixed	ambiguous_group_label	missing_label	label_differs_from_gnomad
+ACB	1000 Genomes	AFR	ACB	AFR	116	114	94	0	true	false	false	false
+ASW	1000 Genomes	AFR	ASW	AFR	74	71	53	1	true	false	false	false
+BantuKenya	HGDP	AFR	BantuKenya	Africa	12	12	10	0	false	false	false	false
+BantuSouthAfrica	HGDP	AFR	BantuSouthAfrica	Africa	8	8	8	0	false	false	false	false
+Biaka	HGDP	AFR	BiakaPygmy	Africa	26	26	22	0	false	false	false	true
+ESN	1000 Genomes	AFR	ESN	AFR	149	148	103	0	false	false	false	false
+GWD	1000 Genomes	AFR	GWD	AFR	178	176	116	0	false	false	false	false
+LWK	1000 Genomes	AFR	LWK	AFR	99	97	90	0	false	false	false	false
+MSL	1000 Genomes	AFR	MSL	AFR	99	98	83	0	false	false	false	false
+Mandenka	HGDP	AFR	Mandenka	Africa	23	23	20	0	false	false	false	false
+Mbuti	HGDP	AFR	MbutiPygmy	Africa	14	14	10	0	false	false	false	true
+San	HGDP	AFR	San	Africa	6	6	6	0	false	false	false	false
+YRI	1000 Genomes	AFR	YRI	AFR	178	175	117	0	false	false	false	false
+Yoruba	HGDP	AFR	Yoruba	Africa	21	21	21	0	false	false	false	false
+CLM	1000 Genomes	AMR	CLM	AMR	132	130	95	22	true	false	false	false
+Colombian	HGDP	AMR	Colombian	America	7	7	6	0	false	false	false	false
+Karitiana	HGDP	AMR	Karitiana	America	12	12	7	0	false	false	false	false
+MXL	1000 Genomes	AMR	MXL	AMR	97	97	63	5	true	false	false	false
+Maya	HGDP	AMR	Maya	America	21	21	21	0	false	false	false	false
+PEL	1000 Genomes	AMR	PEL	AMR	122	122	85	0	true	false	false	false
+PUR	1000 Genomes	AMR	PUR	AMR	139	138	104	81	true	false	false	false
+Pima	HGDP	AMR	Pima	America	14	14	10	0	false	false	false	false
+Surui	HGDP	AMR	Surui	America	8	8	4	0	false	false	false	false
+BEB	1000 Genomes	CSA	BEB	SAS	131	131	99	0	false	false	false	false
+Balochi	HGDP	CSA	Balochi	Central_South_Asia	24	23	23	12	false	false	false	false
+Brahui	HGDP	CSA	Brahui	Central_South_Asia	25	23	23	11	false	false	false	false
+Burusho	HGDP	CSA	Burusho	Central_South_Asia	24	24	24	0	false	false	false	false
+GIH	1000 Genomes	CSA	GIH	SAS	103	103	100	0	false	false	false	false
+Hazara	HGDP	CSA	Hazara	Central_South_Asia	20	20	18	0	false	false	false	false
+ITU	1000 Genomes	CSA	ITU	SAS	107	106	102	0	false	false	false	false
+Kalash	HGDP	CSA	Kalash	Central_South_Asia	23	23	21	0	false	false	false	false
+Makrani	HGDP	CSA	Makrani	Central_South_Asia	25	23	23	20	false	false	false	false
+PJL	1000 Genomes	CSA	PJL	SAS	146	145	102	0	false	false	false	false
+Pathan	HGDP	CSA	Pathan	Central_South_Asia	24	24	24	0	false	false	false	false
+STU	1000 Genomes	CSA	STU	SAS	114	114	101	0	false	false	false	false
+Sindhi	HGDP	CSA	Sindhi	Central_South_Asia	24	23	23	0	false	false	false	false
+CDX	1000 Genomes	EAS	CDX	EAS	93	93	90	0	false	false	false	false
+CHB	1000 Genomes	EAS	CHB	EAS	103	103	103	0	false	false	false	false
+CHS	1000 Genomes	EAS	CHS	EAS	163	163	103	0	false	false	false	false
+Cambodian	HGDP	EAS	Cambodian	East_Asia	10	10	10	0	false	false	false	false
+Dai	HGDP	EAS	Dai	East_Asia	9	9	8	0	false	false	false	false
+Daur	HGDP	EAS	Daur	East_Asia	10	9	9	0	false	false	false	false
+Han	HGDP	EAS	Han	East_Asia	33	33	33	0	false	false	false	false
+Hezhen	HGDP	EAS	Hezhen	East_Asia	9	9	8	0	false	false	false	false
+JPT	1000 Genomes	EAS	JPT	EAS	104	102	102	0	false	false	false	false
+Japanese	HGDP	EAS	Japanese	East_Asia	29	29	28	0	false	false	false	false
+KHV	1000 Genomes	EAS	KHV	EAS	122	122	101	0	false	false	false	false
+Lahu	HGDP	EAS	Lahu	East_Asia	8	8	8	0	false	false	false	false
+Miao	HGDP	EAS	Miao	East_Asia	10	10	10	0	false	false	false	false
+Mongolian	HGDP	EAS	Mongola	East_Asia	10	10	10	0	false	false	false	true
+Naxi	HGDP	EAS	Naxi	East_Asia	9	8	7	0	false	false	false	false
+NorthernHan	HGDP	EAS	Han	East_Asia	10	10	10	0	false	false	false	true
+Oroqen	HGDP	EAS	Oroqen	East_Asia	9	8	8	0	false	false	false	false
+She	HGDP	EAS	She	East_Asia	10	10	9	0	false	false	false	false
+Tu	HGDP	EAS	Tu	East_Asia	10	10	10	0	false	false	false	false
+Tujia	HGDP	EAS	Tujia	East_Asia	10	10	10	0	false	false	false	false
+Uygur	HGDP	EAS	Uygur	East_Asia	10	6	6	5	false	false	false	false
+Xibo	HGDP	EAS	Xibo	East_Asia	9	9	9	0	false	false	false	false
+Yakut	HGDP	EAS	Yakut	East_Asia	25	25	25	1	false	false	false	false
+Yi	HGDP	EAS	Yi	East_Asia	10	10	10	0	false	false	false	false
+Adygei	HGDP	EUR	Adygei	Europe	17	17	17	15	false	false	false	false
+Basque	HGDP	EUR	Basque	Europe	24	22	22	0	false	false	false	false
+BergamoItalian	HGDP	EUR	Italian	Europe	12	11	11	0	false	false	false	true
+CEU	1000 Genomes	EUR	CEU	EUR	179	176	121	0	false	false	false	false
+FIN	1000 Genomes	EUR	FIN	EUR	99	98	98	0	false	false	false	false
+French	HGDP	EUR	French	Europe	27	27	27	0	false	false	false	false
+GBR	1000 Genomes	EUR	GBR	EUR	91	90	88	0	false	false	false	false
+IBS	1000 Genomes	EUR	IBS	EUR	157	151	104	0	false	false	false	false
+Orcadian	HGDP	EUR	Orcadian	Europe	15	15	14	0	false	false	false	false
+Russian	HGDP	EUR	Russian	Europe	25	25	25	0	false	false	false	false
+Sardinian	HGDP	EUR	Sardinian	Europe	27	27	27	0	false	false	false	false
+TSI	1000 Genomes	EUR	TSI	EUR	107	103	103	0	false	false	false	false
+Tuscan	HGDP	EUR	Tuscan	Europe	8	8	8	0	false	false	false	false
+Bedouin	HGDP	MID	Bedouin	Middle_East	46	45	45	0	false	false	false	false
+Druze	HGDP	MID	Druze	Middle_East	42	42	40	0	false	false	false	false
+Mozabite	HGDP	MID	Mozabite	Middle_East	28	26	25	0	false	false	false	false
+Palestinian	HGDP	MID	Palestinian	Middle_East	46	45	40	0	false	false	false	false
+Bougainville	HGDP	OCE	Melanesian	Oceania	13	13	10	0	false	false	false	true
+PapuanHighlands	HGDP	OCE	Papuan	Oceania	9	9	9	0	false	false	false	true
+PapuanSepik	HGDP	OCE	Papuan	Oceania	8	8	8	0	false	false	false	true

@@ -1,0 +1,51 @@
+{
+  "stage": "stage3",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 8.23,
+  "checks": [
+    {
+      "name": "one_label_each",
+      "ok": true,
+      "detail": "0 post-QC samples missing a label; 0 with an unknown group"
+    },
+    {
+      "name": "no_ambiguous_population",
+      "ok": true,
+      "detail": "0 populations map to more than one group"
+    },
+    {
+      "name": "expected_sample_count",
+      "ok": true,
+      "detail": "4094 post-QC samples (expected 4094)"
+    },
+    {
+      "name": "expected_population_count",
+      "ok": true,
+      "detail": "80 populations (expected 80)"
+    },
+    {
+      "name": "per_population_counts_match_koenig",
+      "ok": true,
+      "detail": "0 populations differ from the published post-QC counts"
+    },
+    {
+      "name": "unrelated_matches_released_pca_sets",
+      "ok": true,
+      "detail": "unrelated 3400 vs 3400; related 694 vs 694"
+    },
+    {
+      "name": "all_post_qc_samples_in_vcf",
+      "ok": true,
+      "detail": "0 missing from the VCF header"
+    },
+    {
+      "name": "grch38_contig_length",
+      "ok": true,
+      "detail": "chr17 length 83257441 (GRCh38 83257441)"
+    }
+  ],
+  "notes": "Sample metadata, population mapping and counts (items 4-6). REVIEW STOP: see reports/qc/sample_count_report.md. Review items: Unrelated count 3400 matches Koenig's released unrelated PCA set (3400) but not the n_unrelated column of post_qc_summary.tsv (3376); 25 populations differ.",
+  "blocked_reason": "",
+  "written_at": "2026-09-27T06:54:37+00:00"
+}
