@@ -42,3 +42,19 @@ rule stage2:
         "logs/stage2.log",
     shell:
         "ancal stage2 > {log} 2>&1; rc=$?; cat {log}; exit $rc"
+
+
+rule stage3:
+    input:
+        "reports/status/stage2.json",
+    output:
+        "reports/status/stage3.json",
+        "tables/sample_metadata.tsv",
+        "tables/population_mapping.tsv",
+        "tables/population_counts.tsv",
+        "config/population_groups.yaml",
+        "reports/qc/sample_count_report.md",
+    log:
+        "logs/stage3.log",
+    shell:
+        "ancal stage3 > {log} 2>&1; rc=$?; cat {log}; exit $rc"

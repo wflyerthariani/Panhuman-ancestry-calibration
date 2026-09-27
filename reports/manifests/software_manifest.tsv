@@ -3,7 +3,7 @@ platform	os	macOS-14.7.4-x86_64-i386-64bit
 platform	machine	x86_64
 platform	python	3.11.16
 platform	env_prefix	/Users/arman/miniforge3/envs/ancal
-code	ancal	ancal 0.1.0 @ a9722e5
+code	ancal	ancal 0.1.0 @ c6ab6c8
 tool	bcftools	bcftools 1.21
 tool	tabix	tabix (htslib) 1.21
 tool	bgzip	bgzip (htslib) 1.21

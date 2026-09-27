@@ -203,6 +203,11 @@ class Source(Strict):
     version: str | None = None
     index_suffix: str | None = None
     qc_summary_uri: str | None = None
+    pc_scores_uri: str | None = None
+    pca_outliers_uri: str | None = None
+    related_ids_uri: str | None = None
+    unrelated_mt_uri: str | None = None
+    related_mt_uri: str | None = None
     use: str | None = None
     used_in: str | None = None
     format: str | None = None

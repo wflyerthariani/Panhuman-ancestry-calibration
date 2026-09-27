@@ -304,8 +304,16 @@ def record(
     settings: Settings, out: Path, *, stage: str, source_name: str, command: str, software_name: str,
     software_version: str, input_uri: str = "", access_method: str = "derived", database_version: str = "",
     reference_build: str = "", input_info: RemoteInfo | None = None, input_sha256: str = "",
-) -> ManifestRow:
-    """Record a file produced by a command (remote tabix query, derived table, ...)."""
+) -> ManifestRow | dict:
+    """Record a file produced by a command (remote tabix query, derived table, ...).
+
+    Idempotent: nothing is appended if the latest row for this output has the same
+    checksum and command.
+    """
+    rel = _rel(settings, out)
+    prior = [r for r in read_manifest(settings) if r["output_path"] == rel]
+    if prior and prior[-1]["output_sha256"] == sha256_file(out) and prior[-1]["command"] == command:
+        return prior[-1]
     row = _row(
         settings, stage=stage, source_name=source_name, database_version=database_version,
         reference_build=reference_build, access_method=access_method, uri=input_uri, info=input_info,

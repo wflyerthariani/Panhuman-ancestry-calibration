@@ -46,7 +46,16 @@ sources:
     name: gnomAD HGDP+1KG sample metadata and QC (v2 release, Koenig et al. 2024)
     uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/metadata_and_qc/gnomad_meta_updated.tsv
     qc_summary_uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/metadata_and_qc/post_qc_summary.tsv
-    access: download   # about 6 MB
+    # Koenig et al. post-QC sample set = the samples in the global PCA "without outliers"
+    # (4,094 samples, 80 populations), with 20 PCs per sample.
+    pc_scores_uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/pca/pc_scores_without_outliers/GLOBAL_scores_without_outliers.txt.bgz
+    pca_outliers_uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/pca/pca_outliers.txt
+    # Related samples (Hail Table of 698 IDs), read with ancal.sources.hail_table.
+    related_ids_uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/pca_preprocessing/related_sample_ids.ht
+    # Released unrelated / related PCA MatrixTables; only their sample counts are read (cross-check).
+    unrelated_mt_uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/pca_results/unrelateds_without_outliers.mt
+    related_mt_uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/pca_results/relateds_without_outliers.mt
+    access: download   # about 6 MB in total
 
   reference_fasta:
     name: UCSC hg38 per-chromosome FASTA (GRCh38 primary assembly)

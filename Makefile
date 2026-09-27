@@ -4,7 +4,7 @@ RUN      := conda run --no-capture-output -n $(ENV)
 SCOPE    ?=
 SMK_ARGS := --snakefile workflow/Snakefile --cores 1 --keep-incomplete $(if $(SCOPE),--config scope=$(SCOPE),)
 
-.PHONY: env check-env test budget status stage0 stage1 stage2 freeze-config
+.PHONY: env check-env test budget status stage0 stage1 stage2 stage3 freeze-config
 
 ## Create or update the conda environment and install the ancal package into it.
 env:
@@ -41,3 +41,6 @@ freeze-config:
 
 stage2:
 	$(RUN) snakemake $(SMK_ARGS) stage2
+
+stage3:
+	$(RUN) snakemake $(SMK_ARGS) stage3

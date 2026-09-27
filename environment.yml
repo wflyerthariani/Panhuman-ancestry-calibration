@@ -15,5 +15,6 @@ dependencies:
   - pyyaml
   - requests
   - fsspec
+  - zstandard
   - pytest
   - pip

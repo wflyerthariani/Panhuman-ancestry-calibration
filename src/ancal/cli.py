@@ -148,6 +148,23 @@ def cmd_stage2(args) -> int:
     return 0 if st.status == "pass" else 1
 
 
+def _run_stage(name: str, fn) -> int:
+    s = load_settings()
+    st = fn(s)
+    for c in st.checks:
+        print(f"  [{'ok' if c.ok else 'FAIL'}] {c.name:<38} {c.detail}")
+    print(f"{name}: {st.status}")
+    if st.notes:
+        print(f"  {st.notes}")
+    return 0 if st.status in ("pass", "blocked") else 1
+
+
+def cmd_stage3(args) -> int:
+    from .stages import samples
+
+    return _run_stage("stage3", samples.run)
+
+
 def cmd_status(args) -> int:
     s = load_settings()
     rows = status.read_all(s)
@@ -180,6 +197,9 @@ def main(argv: list[str] | None = None) -> int:
 
     s2 = sub.add_parser("stage2", help="Stage 2 gate: software manifest and provenance check")
     s2.set_defaults(func=cmd_stage2)
+
+    s3 = sub.add_parser("stage3", help="Stage 3: sample metadata, population mapping and counts")
+    s3.set_defaults(func=cmd_stage3)
 
     st = sub.add_parser("status", help="Show the status of every stage run so far")
     st.set_defaults(func=cmd_status)
