@@ -2,7 +2,7 @@
   "stage": "stage5",
   "status": "pass",
   "scope": "smoke",
-  "disk_used_mb": 49.33,
+  "disk_used_mb": 49.34,
   "checks": [
     {
       "name": "mavedb_snapshot",
@@ -27,5 +27,5 @@
   ],
   "notes": "DMS inventory (item 9). REVIEW STOP: 0/23 in-scope assays reviewed. Biologist review: reports/review/dms_direction_review.md -> config/dms_curation.tsv.",
   "blocked_reason": "",
-  "written_at": "2026-09-27T08:06:17+00:00"
+  "written_at": "2026-09-27T08:11:15+00:00"
 }

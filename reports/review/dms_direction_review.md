@@ -3,6 +3,28 @@
 **Who this is for:** someone with a molecular biology or genetics background. No coding needed.
 **Time needed:** about 5–10 minutes per assay. **Assays to review at this scope (`smoke`):** 23.
 
+## Steps
+
+1. **Open `config/dms_curation.tsv`** in Excel or Google Sheets. Filter `in_scope` = `true` and
+   `prescreen_status` = `candidate`; these rows are already at the top.
+2. **For each row, read its card below** (same order, numbered). Each card gives what was
+   measured, three kinds of evidence about the score's direction, and the pipeline's proposal.
+   Open the MaveDB page or the paper whenever the card is not enough.
+3. **Decide:**
+   - include or exclude the assay
+   - for included assays, which direction the raw score runs
+   See "What to decide for each assay" and "Questions to ask yourself" below.
+4. **Fill in the five reviewer columns** (`reviewer_decision`, `reviewer_direction`,
+   `reviewer_notes`, `reviewer_name`, `reviewed_on`). Leave every other column unchanged.
+   Write a note whenever you disagree with the proposal or exclude an assay.
+5. **Save as tab-separated text** with the same file name. In Excel: *File → Save As →
+   Text (Tab delimited)*. In Google Sheets: *File → Download → .tsv*. Send the file to Arman,
+   or commit it if you work in the repository. The pipeline keeps your five columns whenever
+   it regenerates the sheet.
+
+If something on a card looks wrong (wrong gene, missing controls, an odd target), say so in
+`reviewer_notes`. That is useful even if you cannot decide the direction.
+
 ## Why this review is needed
 
 The audit compares AVI predictions with deep mutational scanning (DMS) measurements. Each DMS
@@ -22,20 +44,36 @@ Your job is to confirm or correct it.
 - **A. Calibration.** Some MaveDB score sets have been calibrated, often against ClinVar
   variants, into ranges labelled *normal* and *abnormal* function. If the abnormal range sits
   below the normal range, lower scores mean damage. Only a minority of assays have one.
-- **B. Built-in controls.** Nonsense variants (premature stop, e.g. `p.Arg213Ter`) almost always
-  destroy function, and synonymous variants (e.g. `p.Arg213=`) almost never do. The pipeline
-  compares their scores:
-  - **AUC** is the probability that a random nonsense variant scores higher than a random
+- **B. Built-in controls.** Truncating variants almost always destroy function: nonsense
+  variants (premature stop, e.g. `p.Arg213Ter`) and frameshifts (e.g. `p.Tyr126LeufsTer22`).
+  Synonymous variants (e.g. `p.Arg213=`) almost never do. The pipeline compares their scores:
+  - **AUC** is the probability that a random truncating variant scores higher than a random
     synonymous one.
   - **AUC near 1:** high score = damaging. **AUC near 0:** low score = damaging.
-  - **AUC near 0.5:** the assay does not separate them, which is a warning sign for quality,
-    or the assay measures something where truncation is not "damaging" in the assay's terms.
-  - **Caveat:** nonsense variants near the protein's C-terminus may escape nonsense-mediated
-    decay and behave like missense variants. Assays that start downstream of the protein may
-    show little separation.
+  - **AUC near 0.5:** the assay does not separate them. This is a warning sign for quality, or
+    the assay measures something where truncation is not "damaging" in the assay's own terms.
+    For example, in a dominant-negative selection a truncated protein cannot interfere with
+    the wild-type protein.
+  - **If an assay has no synonymous variants**, truncating variants are compared with all
+    missense variants instead. This is weaker evidence, because missense variants are a mix of
+    harmless and damaging ones. It is marked "[weaker: no synonymous controls]".
+  - **Caveat:** truncations near the protein's C-terminus may escape nonsense-mediated decay
+    and behave like missense variants.
 - **C. Author text.** Sentences from the MaveDB description that mention the score. They are
   shown verbatim; the pipeline does not interpret them. Please check them against A and B,
   and follow the MaveDB link or the paper when they are unclear.
+
+### How the proposal is made
+
+| Calibration (A) | Controls (B) | Proposal | Confidence |
+|---|---|---|---|
+| direction X | direction X, vs synonymous | X | high |
+| direction X | direction X, vs missense only | X | medium |
+| direction X | none | X | medium |
+| none | direction X, vs synonymous | X | medium |
+| none | direction X, vs missense only | X | low |
+| direction X | direction Y | `conflict` | none — you must decide |
+| none | none | `unknown` | none — you must decide |
 
 ## What to decide for each assay
 
@@ -82,8 +120,9 @@ your five columns are kept.
 
 | Flag | Meaning |
 |---|---|
-| `weak_control_separation` | Nonsense vs synonymous AUC is between 0.25 and 0.75 |
-| `no_nonsense_synonymous_controls` | Fewer than 10 of either class had a score, or no protein-level HGVS |
+| `weak_control_separation` | The controls' AUC is between 0.25 and 0.75 |
+| `no_synonymous_controls` | Direction from controls is based on truncating vs missense (weaker) |
+| `no_usable_controls` | Fewer than 10 truncating variants, or no protein-level HGVS: evidence B is unavailable |
 | `fewer_than_20_scored_missense` | Too few single missense variants to be useful |
 | `genomic_mapping_incomplete` / `_failed` | MaveDB could not map every variant to GRCh38. Stage 6 falls back to protein-level mapping |
 | `licence_CC_BY-NC-SA_4.0` | Non-commercial licence (see limitation L-05) |
@@ -92,9 +131,9 @@ your five columns are kept.
 ## Proposal summary
 
 - `conflict`: 2
-- `higher_is_more_damaging`: 2
-- `lower_is_more_damaging`: 12
-- `unknown`: 7
+- `higher_is_more_damaging`: 3
+- `lower_is_more_damaging`: 14
+- `unknown`: 4
 
 ## Assays to review
 
@@ -107,11 +146,12 @@ your five columns are kept.
 - **Variants:** 20724 in MaveDB, 11530 with a numeric score, 1222 single missense
 - **Replicates:** replicate columns: SE_PlusE2NewRep3, score_PlusE2NewRep3, SE_PlusE2NewRep4, score_PlusE2NewRep4, SE_PlusE2NewRep5, score_PlusE2NewRep5; error columns: SE, SE_PlusE2NewRep3, SE_PlusE2NewRep4, SE_PlusE2NewRep5, SE_PlusE2Rep3, SE_PlusE2Rep4
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** `urn:mavedb:00000003-a-2`
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | none | — |
-| B. Controls | nonsense (n=60, median -2.42) vs synonymous (n=377, median -0.308); AUC 0.16 | lower_is_more_damaging |
+| B. Controls | truncating (n=60, median -2.42) vs synonymous (n=377, median -0.308); AUC 0.16 | lower_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
@@ -127,16 +167,17 @@ C. What the authors say about the score:
 - **Variants:** 12316 in MaveDB, 6847 with a numeric score, 3710 single missense
 - **Replicates:** replicate columns: SE_PlusE2NewRep3, score_PlusE2NewRep3, SE_PlusE2NewRep4, score_PlusE2NewRep4, SE_PlusE2NewRep5, score_PlusE2NewRep5; error columns: SE, SE_PlusE2NewRep3, SE_PlusE2NewRep4, SE_PlusE2NewRep5, SE_PlusE2Rep3, SE_PlusE2Rep4
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** `urn:mavedb:00000003-a-1`
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | none | — |
-| B. Controls | too few controls (nonsense 147, synonymous 1; need 10 each) | — |
+| B. Controls | truncating (n=147, median -2.71) vs missense (n=3710, median -0.574); AUC 0.17 [weaker: no synonymous controls] | lower_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `unknown` (confidence: none) · **Flags:** no_nonsense_synonymous_controls,genomic_mapping_incomplete · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: low) · **Flags:** no_synonymous_controls,genomic_mapping_incomplete · **Review status:** **not yet reviewed**
 
 ### 3. BRCA1 — Enrich2 nucleotide variant scores for BRCA1 Y2H
 
@@ -147,11 +188,12 @@ C. What the authors say about the score:
 - **Variants:** 20724 in MaveDB, 17165 with a numeric score, 1354 single missense
 - **Replicates:** replicate columns: SE_Y2H_1_Rep1, score_Y2H_1_Rep1, SE_Y2H_1_Rep2, score_Y2H_1_Rep2, SE_Y2H_1_Rep3, score_Y2H_1_Rep3; error columns: SE, SE_Y2H_1_Rep1, SE_Y2H_1_Rep2, SE_Y2H_1_Rep3, SE_Y2H_2_Rep1, SE_Y2H_2_Rep2
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** `urn:mavedb:00000003-b-2`
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | none | — |
-| B. Controls | nonsense (n=79, median 0.438) vs synonymous (n=396, median -0.0188); AUC 0.65 | — |
+| B. Controls | truncating (n=79, median 0.438) vs synonymous (n=396, median -0.0188); AUC 0.65 | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
@@ -167,16 +209,17 @@ C. What the authors say about the score:
 - **Variants:** 12316 in MaveDB, 10402 with a numeric score, 4142 single missense
 - **Replicates:** replicate columns: SE_Y2H_1_Rep1, score_Y2H_1_Rep1, SE_Y2H_1_Rep2, score_Y2H_1_Rep2, SE_Y2H_1_Rep3, score_Y2H_1_Rep3; error columns: SE, SE_Y2H_1_Rep1, SE_Y2H_1_Rep2, SE_Y2H_1_Rep3, SE_Y2H_2_Rep1, SE_Y2H_2_Rep2
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** `urn:mavedb:00000003-b-1`
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | none | — |
-| B. Controls | too few controls (nonsense 196, synonymous 1; need 10 each) | — |
+| B. Controls | truncating (n=196, median 0.623) vs missense (n=4142, median -0.0434); AUC 0.66 [weaker: no synonymous controls] | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `unknown` (confidence: none) · **Flags:** no_nonsense_synonymous_controls,genomic_mapping_incomplete · **Review status:** **not yet reviewed**
+**Proposed:** `unknown` (confidence: none) · **Flags:** no_synonymous_controls,weak_control_separation,genomic_mapping_incomplete · **Review status:** **not yet reviewed**
 
 ### 5. BRCA1 — BRCA1 RING and BRCT domains depletion scores
 
@@ -187,16 +230,17 @@ C. What the authors say about the score:
 - **Variants:** 1061 in MaveDB, 1061 with a numeric score, 1055 single missense
 - **Replicates:** replicate columns: replicates
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** `urn:mavedb:00000081-a-2`
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | none | — |
-| B. Controls | too few controls (nonsense 4, synonymous 2; need 10 each) | — |
+| B. Controls | too few controls (truncating 4, synonymous 2, missense 1055; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > The depletion score reported here is the number of replicates where the variant was depleted relative to the corresponding control siRNA replicate.
 
-**Proposed:** `unknown` (confidence: none) · **Flags:** no_nonsense_synonymous_controls,genomic_mapping_incomplete · **Review status:** **not yet reviewed**
+**Proposed:** `unknown` (confidence: none) · **Flags:** no_usable_controls,genomic_mapping_incomplete · **Review status:** **not yet reviewed**
 
 ### 6. BRCA1 — BRCA1 RING and BRCT domains mean HDR fluorescence score
 
@@ -207,17 +251,18 @@ C. What the authors say about the score:
 - **Variants:** 2820 in MaveDB, 2820 with a numeric score, 2749 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** `urn:mavedb:00000081-a-1`
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | none | — |
-| B. Controls | too few controls (nonsense 71, synonymous 0; need 10 each) | — |
+| B. Controls | truncating (n=71, median -1.62) vs missense (n=2749, median -0.0672); AUC 0.03 [weaker: no synonymous controls] | lower_is_more_damaging |
 
 C. What the authors say about the score:
    > The frequency of each variant was determined by dividing the variant counts by the total variant count ($\sum{c_{+,i}}$) for each sample: $$f_{+,v} = \frac{c_{+,v}}{\sum{c_{+,i}}}$$ Selection log ratio is calculated as: $$r_v = \ln{\frac{f_{+,v}}{f_{-,v}}}$$ The final score is normalized by wildtype
    > This score set describes an alternative set of scores for this dataset that is based on the frequency of fluorescent cells rather than the number of replicates where a variant was depleted (as originally published).
 
-**Proposed:** `unknown` (confidence: none) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: low) · **Flags:** no_synonymous_controls · **Review status:** **not yet reviewed**
 
 ### 7. BRCA1 — BASE_ACMG quantities derived from the RING domain M2H functional assay
 
@@ -228,16 +273,17 @@ C. What the authors say about the score:
 - **Variants:** 853 in MaveDB, 853 with a numeric score, 659 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | none | — |
-| B. Controls | too few controls (nonsense 0, synonymous 0; need 10 each) | — |
+| B. Controls | too few controls (truncating 0, synonymous 0, missense 659; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `unknown` (confidence: none) · **Flags:** no_nonsense_synonymous_controls,genomic_mapping_incomplete · **Review status:** **not yet reviewed**
+**Proposed:** `unknown` (confidence: none) · **Flags:** no_usable_controls,genomic_mapping_incomplete · **Review status:** **not yet reviewed**
 
 ### 8. BRCA1 — Scores from growth assay of BRCA1 variants
 
@@ -248,16 +294,17 @@ C. What the authors say about the score:
 - **Variants:** 1427 in MaveDB, 1427 with a numeric score, 1359 single missense
 - **Replicates:** replicate columns: rep1_score, rep2_score, rep3_score, rep4_score, control_rep1_score, control_rep2_score; error columns: std, var, control_std, control_var
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — IGVF Coding Variant Focus Group -- Controls: All Variants; Investigator-provided functional classes; IGVF Coding Variant Focus Group -- Controls: Missense Variants Only; ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only] | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 68, synonymous 0; need 10 each) | — |
+| B. Controls | truncating (n=68, median -1.17) vs missense (n=1359, median -0.281); AUC 0.16 [weaker: no synonymous controls] | lower_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_synonymous_controls · **Review status:** **not yet reviewed**
 
 ### 9. BRCA1 — Scores from multiplexed functional assay of BRCA1 variants
 
@@ -268,16 +315,17 @@ C. What the authors say about the score:
 - **Variants:** 2271 in MaveDB, 2271 with a numeric score, 2150 single missense
 - **Replicates:** replicate columns: rep1_score, rep2_score, rep3_score, rep4_score, control_rep1_score, control_rep2_score; error columns: std, var, control_std, control_var
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — Investigator-provided functional classes; IGVF Coding Variant Focus Group -- Controls: Missense Variants Only; IGVF Coding Variant Focus Group -- Controls: All Variants; ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only] | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 121, synonymous 0; need 10 each) | — |
+| B. Controls | truncating (n=121, median -1.24) vs missense (n=2150, median -0.119); AUC 0.12 [weaker: no synonymous controls] | lower_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_synonymous_controls · **Review status:** **not yet reviewed**
 
 ### 10. TP53 — p53 variant effect measured by cell growth
 
@@ -288,11 +336,12 @@ C. What the authors say about the score:
 - **Variants:** 9273 in MaveDB, 9273 with a numeric score, 4069 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | none | — |
-| B. Controls | nonsense (n=344, median 0.414) vs synonymous (n=572, median -2.42); AUC 1.00 | higher_is_more_damaging |
+| B. Controls | truncating (n=2654, median 0.431) vs synonymous (n=572, median -2.42); AUC 1.00 | higher_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
@@ -308,11 +357,12 @@ C. What the authors say about the score:
 - **Variants:** 8274 in MaveDB, 8258 with a numeric score, 7487 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) above normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | higher_is_more_damaging |
-| B. Controls | nonsense (n=393, median -0.264) vs synonymous (n=378, median 0.0495); AUC 0.22 | lower_is_more_damaging |
+| B. Controls | truncating (n=393, median -0.264) vs synonymous (n=378, median 0.0495); AUC 0.22 | lower_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
@@ -328,11 +378,12 @@ C. What the authors say about the score:
 - **Variants:** 8274 in MaveDB, 8258 with a numeric score, 7487 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) above normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | higher_is_more_damaging |
-| B. Controls | nonsense (n=393, median 1.16) vs synonymous (n=378, median -0.254); AUC 0.84 | higher_is_more_damaging |
+| B. Controls | truncating (n=393, median 1.16) vs synonymous (n=378, median -0.254); AUC 0.84 | higher_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
@@ -348,11 +399,12 @@ C. What the authors say about the score:
 - **Variants:** 8274 in MaveDB, 8258 with a numeric score, 7487 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | lower_is_more_damaging |
-| B. Controls | nonsense (n=393, median -1.52) vs synonymous (n=378, median 0.365); AUC 0.10 | lower_is_more_damaging |
+| B. Controls | truncating (n=393, median -1.52) vs synonymous (n=378, median 0.365); AUC 0.10 | lower_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
@@ -365,19 +417,20 @@ C. What the authors say about the score:
 
 - **What was measured:** Deep mutational scan of 9225 mutations in human TP53 covering Exons 5, 6, 7 and 8 plus flanking 13nt intronic regions in HCT116 colorectal cancer cells. Introduced where SNVs, DNVs, TNVs, insertions of size 1 and deletions up to size 3.
 - **Assay:** —
-- **Variants:** 8052 in MaveDB, 8052 with a numeric score, 0 single missense
+- **Variants:** 8052 in MaveDB, 8052 with a numeric score, 3553 single missense
 - **Replicates:** error columns: SE_RFS_enrich2
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | none | — |
-| B. Controls | no protein-level HGVS; controls not classifiable | — |
+| B. Controls | truncating (n=2948, median 1.01) vs synonymous (n=377, median -1); AUC 1.00 | higher_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `unknown` (confidence: none) · **Flags:** no_nonsense_synonymous_controls,fewer_than_20_scored_missense · **Review status:** **not yet reviewed**
+**Proposed:** `higher_is_more_damaging` (confidence: medium) · **Flags:** none · **Review status:** **not yet reviewed**
 
 ### 15. TP53 — Scores from arrayed yeast-based assay of TP53 p21WAF1 promoter
 
@@ -388,16 +441,17 @@ C. What the authors say about the score:
 - **Variants:** 2314 in MaveDB, 2314 with a numeric score, 2314 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 0, synonymous 0; need 10 each) | — |
+| B. Controls | too few controls (truncating 0, synonymous 0, missense 2314; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_usable_controls · **Review status:** **not yet reviewed**
 
 ### 16. TP53 — Scores from arrayed yeast-based assay of TP53 MDM2 promoter
 
@@ -408,16 +462,17 @@ C. What the authors say about the score:
 - **Variants:** 2314 in MaveDB, 2314 with a numeric score, 2314 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 0, synonymous 0; need 10 each) | — |
+| B. Controls | too few controls (truncating 0, synonymous 0, missense 2314; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_usable_controls · **Review status:** **not yet reviewed**
 
 ### 17. TP53 — Scores from arrayed yeast-based assay of TP53 BAX promoter
 
@@ -428,16 +483,17 @@ C. What the authors say about the score:
 - **Variants:** 2314 in MaveDB, 2314 with a numeric score, 2314 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 0, synonymous 0; need 10 each) | — |
+| B. Controls | too few controls (truncating 0, synonymous 0, missense 2314; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_usable_controls · **Review status:** **not yet reviewed**
 
 ### 18. TP53 — Arrayed yeast-based assay of TP53 h1433snWT promoter
 
@@ -448,16 +504,17 @@ C. What the authors say about the score:
 - **Variants:** 2314 in MaveDB, 2314 with a numeric score, 2314 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 0, synonymous 0; need 10 each) | — |
+| B. Controls | too few controls (truncating 0, synonymous 0, missense 2314; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_usable_controls · **Review status:** **not yet reviewed**
 
 ### 19. TP53 — Scores from arrayed yeast-based assay of TP53 p53AIP1 promoter
 
@@ -468,16 +525,17 @@ C. What the authors say about the score:
 - **Variants:** 2314 in MaveDB, 2314 with a numeric score, 2314 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 0, synonymous 0; need 10 each) | — |
+| B. Controls | too few controls (truncating 0, synonymous 0, missense 2314; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_usable_controls · **Review status:** **not yet reviewed**
 
 ### 20. TP53 — Scores from arrayed yeast-based assay of TP53 GADD45 promoter
 
@@ -488,16 +546,17 @@ C. What the authors say about the score:
 - **Variants:** 2314 in MaveDB, 2314 with a numeric score, 2314 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 0, synonymous 0; need 10 each) | — |
+| B. Controls | too few controls (truncating 0, synonymous 0, missense 2314; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_usable_controls · **Review status:** **not yet reviewed**
 
 ### 21. TP53 — Scores from arrayed yeast-based assay of TP53 Noxa promoter
 
@@ -508,16 +567,17 @@ C. What the authors say about the score:
 - **Variants:** 2314 in MaveDB, 2314 with a numeric score, 2314 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 0, synonymous 0; need 10 each) | — |
+| B. Controls | too few controls (truncating 0, synonymous 0, missense 2314; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_usable_controls · **Review status:** **not yet reviewed**
 
 ### 22. TP53 — Scores from arrayed yeast-based assay of TP53 p53R2 promoter
 
@@ -528,16 +588,17 @@ C. What the authors say about the score:
 - **Variants:** 2314 in MaveDB, 2314 with a numeric score, 2314 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** complete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) below normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | lower_is_more_damaging |
-| B. Controls | too few controls (nonsense 0, synonymous 0; need 10 each) | — |
+| B. Controls | too few controls (truncating 0, synonymous 0, missense 2314; need 10 truncating plus 10 synonymous or missense) | — |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)
 
-**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_nonsense_synonymous_controls · **Review status:** **not yet reviewed**
+**Proposed:** `lower_is_more_damaging` (confidence: medium) · **Flags:** no_usable_controls · **Review status:** **not yet reviewed**
 
 ### 23. TP53 — Scores from Nutlin-3a treatment of TP53 variant-expressing K562 reporter cells
 
@@ -548,11 +609,12 @@ C. What the authors say about the score:
 - **Variants:** 7893 in MaveDB, 7893 with a numeric score, 7466 single missense
 - **Replicates:** none reported in score columns
 - **Genome mapping by MaveDB:** incomplete
+- **Same experiment as:** no other in-scope score set
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
 | A. Calibration | abnormal range(s) above normal range(s) — ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only]; Investigator-provided functional classes | higher_is_more_damaging |
-| B. Controls | nonsense (n=391, median -0.3) vs synonymous (n=36, median -0.0493); AUC 0.22 | lower_is_more_damaging |
+| B. Controls | truncating (n=391, median -0.3) vs synonymous (n=36, median -0.0493); AUC 0.22 | lower_is_more_damaging |
 
 C. What the authors say about the score:
    > (no sentence about score meaning found — see the MaveDB page)

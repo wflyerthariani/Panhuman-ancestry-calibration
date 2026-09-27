@@ -23,4 +23,4 @@ permanent copy will be under `archive_2.0/2026/`.
 | TP53 | ENSG00000141510.21 | ENST00000269305.9 | ENSP00000269305.4 | chr17 | - | 7669612 | 7676594 | 10 | 1179 | 393 |
 | BRCA1 | ENSG00000012048.28 | ENST00000357654.9 | ENSP00000350283.3 | chr17 | - | 43045681 | 43124096 | 22 | 5589 | 1863 |
 
-Local data used after this stage: 39.3 MB of 1.0 GB.
+Local data used after this stage: 49.3 MB of 1.0 GB.
