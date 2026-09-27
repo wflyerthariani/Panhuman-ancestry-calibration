@@ -32,7 +32,8 @@ never stored.
 ```sh
 make clean-scope SCOPE=smoke     # optional: archives smoke outputs to reports/archive/smoke_<date>/
 # set `scope: dms_genes` in config/data_sources.yaml
-make stage4     # regions BED, full reference, AlphaMissense + ClinVar subsets
+make stage4     # regions BED (genes from the Stage 5 inventory made during the smoke run),
+                # reference for every contig in scope, AlphaMissense + ClinVar subsets
 make stage5     # DMS inventory + scores for all candidate genes
                 # STOP: review config/dms_curation.yaml (score direction, quality)
 make stage6     # DMS harmonization
@@ -86,3 +87,4 @@ below as each stage is implemented.
 | 1 | `config/analysis.yaml` and `config/data_sources.yaml` pass the schema (AF bins contiguous, joins on chrom/pos/ref/alt, seven group labels, every source has a URI except AVI); writes `reports/qc/config_status.md` | Read the validation message in `logs/stage1.log`; fix the YAML, never the generated report |
 | 2 | Software manifest written with bcftools/tabix/samtools/snakemake found; one live download (gnomAD `post_qc_summary.tsv`, about 10 KB) recorded with source and output SHA-256; every manifest row has all Step 1 fields | Network: check that `storage.googleapis.com` is reachable. Incomplete row: `logs/stage2.log` names the row and fields |
 | 3 | Every post-QC sample has one population label and one group label; 4,094 samples and 80 populations; per-population counts equal Koenig et al.'s published post-QC counts; unrelated/related counts equal their released PCA sets (3,400 / 694); every post-QC sample is in the VCF header; the VCF contig length matches GRCh38 | A count mismatch means the gnomAD release files changed: compare the ETags in `reports/manifests/data_manifest.tsv` and read `reports/qc/sample_count_report.md`. The related-ID decoder refuses unfamiliar Hail formats; if so, read the table with Hail instead. Stage 3 does not depend on scope (sample metadata is always fetched in full, about 7 MB) |
+| 4 | 19,000+ MANE Select transcripts, one per gene, with CDS lengths that are multiples of 3; every scope gene found; each reference contig has the GRCh38 length and only ACGTN; every AlphaMissense and ClinVar REF allele equals the GRCh38 base; ClinVar comes from a dated release that did not change during the read; disk budget | `blocked` at `dms_genes` scope if `tables/dms_candidate_inventory.tsv` is missing: run Stage 5 first. A REF mismatch means a build or contig-naming problem: stop and investigate, do not filter it away. About 3 minutes at smoke scope, most of it streaming AlphaMissense (643 MB) |

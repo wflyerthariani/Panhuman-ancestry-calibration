@@ -413,7 +413,7 @@ def write_report(settings, samples, counts, mapping, inp, n_unrel_mt, n_rel_mt, 
         "n_post_qc_1kg", "koenig_n_post_qc", "koenig_n_unrelated")
     small = counts.filter((pl.col("level") == "population") & (pl.col("n_unrelated") < 10)).select(
         "population_group", "original_population", "n_post_qc", "n_unrelated")
-    excl = excluded.group_by("exclusion_reason").agg(pl.len().alias("n"), pl.col("sample_id").sort().str.join(", ").alias("samples")).sort("n", descending=True)
+    excl = excluded.group_by("exclusion_reason").agg(pl.len().alias("n"), pl.col("sample_id").sort().str.join(", ").alias("samples")).sort(["n", "exclusion_reason"], descending=[True, False])
     gnomad_hq_dropped = ["Biaka", "Mbuti", "San", "Bougainville", "PapuanHighlands", "PapuanSepik"]
     merged = mapping.filter(pl.col("label_differs_from_gnomad")).select("original_population", "gnomad_population_label", "population_group")
     disc = post.group_by("population_group").agg(pl.col("pc_group_discordant").sum().alias("n_discordant"), pl.len().alias("n")).sort("population_group")

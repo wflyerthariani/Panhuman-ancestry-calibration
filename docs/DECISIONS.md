@@ -27,7 +27,7 @@ Protocol source: Caroline Duncan's Slack canvas "Ancestry calibration audit"
 | R-03 | **List of recently admixed populations.** ACB, ASW, CLM, MXL, PEL and PUR are flagged. None are excluded (Step 5). | Keep this list. Decide whether any HGDP populations (for example Hazara or Uygur) should also be flagged. | `tables/population_mapping.tsv` | open |
 | R-04 | **Two unexplained exclusions.** HGDP01371 (Basque) and LP6005441-DNA_A09 (Naxi) pass gnomAD's hard filters and are not PCA outliers, but are absent from Koenig's post-QC release. The reason is not documented. | Exclude them, following the release. Record the reason as `not_in_koenig_post_qc_release`. | `tables/sample_metadata.tsv` | open |
 | R-05 | **OCE may miss the inferential criteria.** OCE has 30 post-QC samples, 27 unrelated, across 3 populations. It may not reach ≥200 evaluable variants and ≥5 genes (Step 18). | Stage 11 will estimate this at `dms_genes` scope. If OCE fails, it stays descriptive only, as the protocol already specifies. | Stage 11 | watch |
-| R-06 | **Proposed analysis settings awaiting confirmation** (all `status: proposed` in `config/analysis.yaml`). | Chromosomes chr1–22 + chrX (no Y/M) · CADD **v1.7** as the comparator · GENCODE **v50** MANE Select as the coding definition · bootstrap seed 20260926 · ClinVar = latest weekly release, date recorded at fetch · DMS replicates = the assay-reported score (mean where only replicates exist) · missing AVI score = no record for the exact chrom:pos:ref:alt, or a null/NaN score · population mapping = `config/population_groups.yaml`. | `reports/qc/config_status.md` | open |
+| R-06 | **Proposed analysis settings awaiting confirmation** (the smoke run used ClinVar **2026-09-23**; see D-024) (all `status: proposed` in `config/analysis.yaml`). | Chromosomes chr1–22 + chrX (no Y/M) · CADD **v1.7** as the comparator · GENCODE **v50** MANE Select as the coding definition · bootstrap seed 20260926 · ClinVar = latest weekly release, date recorded at fetch · DMS replicates = the assay-reported score (mean where only replicates exist) · missing AVI score = no record for the exact chrom:pos:ref:alt, or a null/NaN score · population mapping = `config/population_groups.yaml`. | `reports/qc/config_status.md` | open |
 | R-07 | **Items still pending on data.** These are settled by later stages: AVI score field and direction (Stage 8, needs Atlas access), DMS assay list and per-assay direction and quality (Stage 5, review stop), and the DMS gene universe (Stage 9, review stop). | — | `config/analysis.yaml` | pending |
 
 ---
@@ -146,6 +146,47 @@ self-reported `sex` column exists for only 921 samples and is kept, but not used
 
 **D-020 — Genome build confirmed.** The VCF header's chr17 length (83,257,441) equals GRCh38.
 
+### Reference and annotation (Stage 4)
+
+**D-021 — Smoke scope = BRCA1 and TP53 (chr17).** Both have large, well-known DMS datasets.
+Their MANE Select CDS covers 32 merged intervals and 6,768 bp. The smoke run stored 38.6 MB of
+data in total. Stage 5 will confirm that both have usable MaveDB score sets.
+
+**D-022 — GENCODE v50 basic, MANE Select only.** 19,256 MANE Select transcripts, exactly one per
+gene. chrY and chrM rows (including chrY PAR copies) are excluded, matching the chromosome setting
+(D-010). One transcript (TMEM247, ENST00000434431.2) has a CDS length that is not a multiple of 3.
+It is not a DMS gene and is left as is.
+
+**D-023 — Reference FASTA is stored per contig** (`GRCh38.<contig>.fa.gz`). It is uppercased
+(UCSC soft-masks repeats in lower case) and bgzipped, with `.fai` and `.gzi` indexes. Each contig's
+length is checked against GRCh38, and its alphabet is checked to be ACGTN only.
+
+**D-024 — ClinVar is fixed to a dated release.** "latest" is read only to learn its
+`##fileDate`. Data is then read from the dated file
+(`clinvar_20260923.vcf.gz`, checked unchanged before and after reading), so a weekly
+replacement cannot corrupt a run. The permanent location is `archive_2.0/<year>/`. The release
+used in the smoke run is **2026-09-23**. It must be written into `config/analysis.yaml →
+clinvar.release` when the config is frozen (R-06). ClinVar names chromosomes `1..22, X`; they are
+renamed to `chr1..` on extraction. At smoke scope: 15,315 records, 11,046 of them SNVs.
+
+**D-025 — AlphaMissense subset for protein-to-genome lookup.** 15,032 rows at smoke scope.
+Every REF allele matches GRCh38. Its transcripts are older Ensembl versions (for example
+`ENST00000335137.4`), not necessarily MANE Select, so Stage 6 must match on protein change *and*
+check the transcript. Its licence is CC BY-NC-SA 4.0 (L-07).
+
+**D-026 — Remote tabix indexes are fetched into the data store** and passed with htslib's
+`URL##idx##local.tbi` syntax. Otherwise htslib silently downloads `.tbi` files into the current
+working directory. No stray index files were found after Stage 4.
+
+**D-027 — Outputs are deterministic.** Re-running a stage must give byte-identical tables and
+reports. Ties in sort order are broken explicitly (a tie in the Stage 3 exclusion table was found
+and fixed), and reports do not contain run dates; run times are in the manifest.
+
+**D-028 — Stage 4 depends on Stage 5 at `dms_genes` scope.** That scope takes its genes from
+`tables/dms_candidate_inventory.tsv`. The inventory is scope-independent (all human MaveDB
+metadata), so the one made during the smoke run is reused. If it is missing, Stage 4 reports
+`blocked` with instructions rather than failing.
+
 ---
 
 ## 3. Known limitations (inputs to item 15)
@@ -158,3 +199,4 @@ self-reported `sex` column exists for only 921 samples and is kept, but not used
 | L-04 | **CADD is licensed for non-commercial use only.** | This may restrict use of the comparator in a commercial context. | Confirm the licence position with the team. |
 | L-05 | **Per-dataset licences of MaveDB score sets vary.** | Some DMS sets may not be redistributable. | Stage 5 records each score set's licence. |
 | L-06 | **Hail Table decoder covers one layout only** (D-016). | A future re-release in a different format would stop Stage 3. | The decoder fails loudly; the fallback is to read the table with Hail. |
+| L-07 | **AlphaMissense is licensed CC BY-NC-SA 4.0 (non-commercial, share-alike).** | This may restrict commercial use of anything derived from the protein-to-genome lookup. AVI itself includes AlphaMissense, so the AVI licence needs checking too (L-02). | Confirm the licence position with the team, alongside CADD (L-04). |

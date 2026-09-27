@@ -46,7 +46,7 @@ a failure. It is listed automatically in the unresolved-issues report (item 15).
 | 1 Analysis configuration | `make stage1` | 2 | 2 | implemented — open items in `reports/qc/config_status.md` |
 | 2 Provenance and manifests | `make stage2` | 3 | 1 | implemented — `reports/manifests/` |
 | 3 Samples and populations | `make stage3` | 4, 5, 6 | 3–5 | implemented — **review stop**: `reports/qc/sample_count_report.md` |
-| 4 Reference and annotation (scope-aware) | `make stage4` | (inputs) | 6, 29 | planned |
+| 4 Reference and annotation (scope-aware) | `make stage4` | (inputs) | 6, 29 | implemented — `reports/qc/reference_report.md` |
 | 5 DMS candidate inventory | `make stage5` | 9 | 12 | planned — **review stop** |
 | 6 DMS harmonization | `make stage6` | 11 | 13 | planned |
 | 7 Population variants | `make stage7` | 7 | 6–8 | planned |
