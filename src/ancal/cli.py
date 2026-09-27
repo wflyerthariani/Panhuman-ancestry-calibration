@@ -171,6 +171,12 @@ def cmd_stage4(args) -> int:
     return _run_stage("stage4", reference.run)
 
 
+def cmd_stage5(args) -> int:
+    from .stages import dms_inventory
+
+    return _run_stage("stage5", lambda s: dms_inventory.run(s, refresh=args.refresh))
+
+
 def cmd_status(args) -> int:
     s = load_settings()
     rows = status.read_all(s)
@@ -209,6 +215,10 @@ def main(argv: list[str] | None = None) -> int:
 
     s4 = sub.add_parser("stage4", help="Stage 4: reference and annotation resources (scope-aware)")
     s4.set_defaults(func=cmd_stage4)
+
+    s5 = sub.add_parser("stage5", help="Stage 5: DMS candidate inventory and direction/quality review sheet")
+    s5.add_argument("--refresh", action="store_true", help="take a new MaveDB snapshot instead of reusing the saved one")
+    s5.set_defaults(func=cmd_stage5)
 
     st = sub.add_parser("status", help="Show the status of every stage run so far")
     st.set_defaults(func=cmd_status)

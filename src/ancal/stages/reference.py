@@ -104,7 +104,8 @@ def scope_genes(ds: config.DataSources, tx: pl.DataFrame, root: Path) -> list[st
                 "scope dms_genes takes its genes from tables/dms_candidate_inventory.tsv (Stage 5), which does "
                 "not exist yet. Run Stage 5 once (the inventory is scope-independent), then re-run Stage 4."
             )
-        return sorted(pl.read_csv(inv, separator="\t")["gene_symbol"].drop_nulls().unique().to_list())
+        cand = pl.read_csv(inv, separator="\t", infer_schema_length=0).filter(pl.col("prescreen_status") == "candidate")
+        return sorted(cand["gene_symbol"].drop_nulls().unique().to_list())
     raise ValueError(f"unknown gene spec {genes!r} for scope {ds.scope}")
 
 

@@ -93,6 +93,12 @@ sources:
     uri: https://api.mavedb.org/api/v1
     access: api
 
+  uniprot:
+    name: UniProt REST (accession -> primary gene name)
+    uri: https://rest.uniprot.org/uniprotkb/accessions
+    access: api
+    use: resolves MaveDB target genes that carry only a UniProt accession (Stage 5)
+
   cadd:
     name: CADD v1.7 GRCh38 SNVs
     uri: https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/whole_genome_SNVs.tsv.gz

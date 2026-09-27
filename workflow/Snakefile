@@ -71,3 +71,18 @@ rule stage4:
         "logs/stage4.log",
     shell:
         "ancal stage4 > {log} 2>&1; rc=$?; cat {log}; exit $rc"
+
+
+rule stage5:
+    input:
+        "reports/status/stage4.json",
+    output:
+        "reports/status/stage5.json",
+        "tables/dms_candidate_inventory.tsv",
+        "config/dms_curation.tsv",
+        "reports/review/dms_direction_review.md",
+        "reports/qc/dms_inventory_report.md",
+    log:
+        "logs/stage5.log",
+    shell:
+        "ancal stage5 > {log} 2>&1; rc=$?; cat {log}; exit $rc"
