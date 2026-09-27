@@ -248,15 +248,22 @@ def _lines(chunks: Iterator[bytes]) -> Iterator[str]:
 
 
 def stream_filter(
-    settings: Settings, uri: str, dest: Path, keep: Callable[[str], bool], *, stage: str, source_name: str,
-    database_version: str = "", reference_build: str = "", filter_description: str,
-    gzipped_input: bool | None = None, gzip_output: bool | None = None,
+    settings: Settings, uri: str, dest: Path, keep: Callable[[str], bool] | None = None, *, stage: str,
+    source_name: str, database_version: str = "", reference_build: str = "", filter_description: str,
+    transform: Callable[[str], str | None] | None = None, gzipped_input: bool | None = None,
+    gzip_output: bool | None = None, bgzip_output: bool = False,
 ) -> ManifestRow:
     """Stream `uri`, write only lines where keep(line) is true. The source is hashed, never stored.
 
+    `transform` may be given instead of `keep`: it returns the line to write, or None to drop it.
+    `bgzip_output` pipes the output through `bgzip` so it can be indexed (faidx, tabix).
     The output is budget-checked as it grows, so a filter that keeps too much aborts
     instead of filling the disk.
     """
+    if (keep is None) == (transform is None):
+        raise ValueError("give exactly one of keep= or transform=")
+    if transform is None:
+        transform = lambda line: line if keep(line) else None  # noqa: E731
     info = head(uri)
     if gzipped_input is None:
         gzipped_input = uri.endswith((".gz", ".bgz"))
@@ -277,17 +284,34 @@ def stream_filter(
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_name(dest.name + ".part")
     kept = 0
+    proc = raw_out = None
     try:
-        opener = (lambda p: gzip.open(p, "wt", compresslevel=6)) if gzip_output else (lambda p: open(p, "w"))
-        with opener(tmp) as out:
+        if bgzip_output:
+            raw_out = open(tmp, "wb")
+            proc = subprocess.Popen(["bgzip", "-c"], stdin=subprocess.PIPE, stdout=raw_out)
+            out = io.TextIOWrapper(proc.stdin, encoding="utf-8")
+        elif gzip_output:
+            out = gzip.open(tmp, "wt", compresslevel=6)
+        else:
+            out = open(tmp, "w")
+        with out:
             for line in _lines(chunks):
-                if keep(line):
-                    out.write(line)
-                    kept += len(line)
-                    if kept % BUDGET_CHECK_EVERY < len(line):
+                new_line = transform(line)
+                if new_line is not None:
+                    out.write(new_line)
+                    kept += len(new_line)
+                    if kept % BUDGET_CHECK_EVERY < len(new_line):
                         budget.check(settings)
+        if proc is not None and proc.wait() != 0:
+            raise RuntimeError(f"bgzip exited with {proc.returncode}")
+        if raw_out is not None:
+            raw_out.close()
         tmp.replace(dest)
     finally:
+        if proc is not None and proc.poll() is None:
+            proc.kill()
+        if raw_out is not None and not raw_out.closed:
+            raw_out.close()
         tmp.unlink(missing_ok=True)
     row = _row(
         settings, stage=stage, source_name=source_name, database_version=database_version,

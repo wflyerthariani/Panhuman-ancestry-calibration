@@ -58,3 +58,16 @@ rule stage3:
         "logs/stage3.log",
     shell:
         "ancal stage3 > {log} 2>&1; rc=$?; cat {log}; exit $rc"
+
+
+rule stage4:
+    input:
+        "reports/status/stage3.json",
+        "config/data_sources.yaml",
+    output:
+        "reports/status/stage4.json",
+        "reports/qc/reference_report.md",
+    log:
+        "logs/stage4.log",
+    shell:
+        "ancal stage4 > {log} 2>&1; rc=$?; cat {log}; exit $rc"

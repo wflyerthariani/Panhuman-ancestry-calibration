@@ -140,3 +140,25 @@ def test_software_manifest(tmp_path):
     text = path.read_text()
     assert text.startswith("kind\tname\tversion\n")
     assert "\tbcftools\t" in text and "\tpolars\t" in text
+
+
+def test_stream_filter_transform_bgzip(tmp_path, server):
+    import subprocess
+
+    served, base = server
+    raw = gzip.compress(b">chr17\nacgtNN\nACgt\n")
+    (served / "chr17.fa.gz").write_bytes(raw)
+    s = _settings(tmp_path)
+    dest = s.data_dir("reference") / "chr17.fa.gz"
+    provenance.stream_filter(s, f"{base}/chr17.fa.gz", dest,
+                             transform=lambda l: l if l.startswith(">") else l.upper(),
+                             stage="s", source_name="fa", filter_description="upper", bgzip_output=True)
+    assert gzip.decompress(dest.read_bytes()) == b">chr17\nACGTNN\nACGT\n"
+    subprocess.run(["samtools", "faidx", str(dest)], check=True)  # only works on true bgzip
+    assert Path(f"{dest}.fai").read_text().startswith("chr17\t10\t")
+
+
+def test_stream_filter_needs_exactly_one_of_keep_transform(tmp_path):
+    s = _settings(tmp_path)
+    with pytest.raises(ValueError):
+        provenance.stream_filter(s, "x", tmp_path / "o", stage="s", source_name="x", filter_description="x")

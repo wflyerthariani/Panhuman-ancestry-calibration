@@ -165,6 +165,12 @@ def cmd_stage3(args) -> int:
     return _run_stage("stage3", samples.run)
 
 
+def cmd_stage4(args) -> int:
+    from .stages import reference
+
+    return _run_stage("stage4", reference.run)
+
+
 def cmd_status(args) -> int:
     s = load_settings()
     rows = status.read_all(s)
@@ -200,6 +206,9 @@ def main(argv: list[str] | None = None) -> int:
 
     s3 = sub.add_parser("stage3", help="Stage 3: sample metadata, population mapping and counts")
     s3.set_defaults(func=cmd_stage3)
+
+    s4 = sub.add_parser("stage4", help="Stage 4: reference and annotation resources (scope-aware)")
+    s4.set_defaults(func=cmd_stage4)
 
     st = sub.add_parser("status", help="Show the status of every stage run so far")
     st.set_defaults(func=cmd_status)

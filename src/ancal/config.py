@@ -208,6 +208,8 @@ class Source(Strict):
     related_ids_uri: str | None = None
     unrelated_mt_uri: str | None = None
     related_mt_uri: str | None = None
+    release: str | None = None
+    dated_uris: list[str] | None = None
     use: str | None = None
     used_in: str | None = None
     format: str | None = None

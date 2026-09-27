@@ -77,9 +77,16 @@ sources:
 
   clinvar:
     name: ClinVar GRCh38 VCF
+    # "latest" is read only to learn its ##fileDate. Data is then read from the dated file,
+    # so the release is fixed even if the weekly file is replaced mid-run.
     uri: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz
+    release: latest          # or a pinned date, e.g. "20260923"
+    dated_uris:              # tried in order; archive_2.0 is the permanent location
+      - https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar_{date}.vcf.gz
+      - https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/weekly/clinvar_{date}.vcf.gz
+      - https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/{year}/clinvar_{date}.vcf.gz
     index_suffix: .tbi
-    access: remote_tabix
+    access: remote_tabix     # ClinVar names chromosomes 1..22,X; renamed to chr1.. on extraction
 
   mavedb:
     name: MaveDB API
