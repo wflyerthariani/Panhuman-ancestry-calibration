@@ -30,3 +30,15 @@ rule stage1:
         "logs/stage1.log",
     shell:
         "ancal validate-config > {log} 2>&1; rc=$?; cat {log}; exit $rc"
+
+
+rule stage2:
+    input:
+        "reports/status/stage1.json",
+    output:
+        "reports/status/stage2.json",
+        "reports/manifests/software_manifest.tsv",
+    log:
+        "logs/stage2.log",
+    shell:
+        "ancal stage2 > {log} 2>&1; rc=$?; cat {log}; exit $rc"

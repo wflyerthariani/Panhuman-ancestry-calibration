@@ -113,6 +113,41 @@ def cmd_freeze_config(args) -> int:
     return 0
 
 
+def cmd_stage2(args) -> int:
+    """Stage 2 gate: software manifest, one live recorded fetch, manifest completeness."""
+    from . import config, provenance
+
+    s = load_settings()
+    checks = []
+
+    sw = provenance.write_software_manifest(s)
+    text = sw.read_text()
+    missing_tools = [t for t in ("bcftools", "tabix", "samtools", "snakemake") if f"\t{t}\tnot found" in text]
+    checks.append(status.Check("software_manifest", not missing_tools,
+                               f"{sw.relative_to(s.root)}" + (f"; missing {missing_tools}" if missing_tools else "")))
+
+    # Live end-to-end check with a small real input Stage 3 needs anyway (~10 KB).
+    src = config.load_data_sources(s.root).sources["sample_metadata"]
+    dest = s.data_dir("population_metadata") / "post_qc_summary.tsv"
+    try:
+        row = provenance.fetch(s, src.qc_summary_uri, dest, stage="stage2",
+                               source_name="gnomAD HGDP+1KG post-QC summary", database_version="hgdp_1kg_v2")
+        sha = row["output_sha256"] if isinstance(row, dict) else row.output_sha256
+        checks.append(status.Check("live_fetch", True, f"{dest.name} sha256={sha[:12]}…"))
+    except Exception as e:  # network or budget failure
+        checks.append(status.Check("live_fetch", False, f"{type(e).__name__}: {e}"))
+
+    bad = provenance.incomplete_rows(s)
+    checks.append(status.Check("manifest_complete", not bad,
+                               "all rows have every Step 1 field" if not bad else f"incomplete rows: {bad}"))
+
+    st = status.write(s, "stage2", checks, notes="Dataset and software manifest (item 3).")
+    for c in checks:
+        print(f"  [{'ok' if c.ok else 'FAIL'}] {c.name:<20} {c.detail}")
+    print(f"stage2: {st.status}")
+    return 0 if st.status == "pass" else 1
+
+
 def cmd_status(args) -> int:
     s = load_settings()
     rows = status.read_all(s)
@@ -142,6 +177,9 @@ def main(argv: list[str] | None = None) -> int:
 
     f = sub.add_parser("freeze-config", help="Freeze analysis.yaml (only when every item is confirmed)")
     f.set_defaults(func=cmd_freeze_config)
+
+    s2 = sub.add_parser("stage2", help="Stage 2 gate: software manifest and provenance check")
+    s2.set_defaults(func=cmd_stage2)
 
     st = sub.add_parser("status", help="Show the status of every stage run so far")
     st.set_defaults(func=cmd_status)

@@ -14,7 +14,9 @@ after the Step 40 review and config freeze.
 
 - **Never edit files by hand** in `data_store/`, `tables/`, `reports/` or `deliverables/`.
   Every file there is produced by a script in `src/ancal/` run through `workflow/Snakefile`.
-- **Every download** is recorded in `data_store/manifests/data_manifest.tsv` (protocol Step 1).
+- **Every download** is recorded in `reports/manifests/data_manifest.tsv` (protocol Step 1), with source
+  URL, ETag, size and SHA-256, the output checksum, the command and the code commit.
+  Large sources are hashed as they stream past but never stored in full.
 - **Local disk is capped** by `storage.local_budget_gb` in `config/data_sources.yaml`
   (1 GB for now). Stages refuse downloads that would exceed it. See [SCALING_UP.md](SCALING_UP.md).
 
@@ -36,7 +38,7 @@ a failure. It is listed automatically in the unresolved-issues report (item 15).
 |---|---|---|---|---|
 | 0 Environment and scaffold | `make stage0` | 1 | 1 | implemented |
 | 1 Analysis configuration | `make stage1` | 2 | 2 | implemented — open items in `reports/qc/config_status.md` |
-| 2 Provenance and manifests | `make stage2` | 3 | 1 | planned |
+| 2 Provenance and manifests | `make stage2` | 3 | 1 | implemented — `reports/manifests/` |
 | 3 Samples and populations | `make stage3` | 4, 5, 6 | 3–5 | planned |
 | 4 Reference and annotation (scope-aware) | `make stage4` | (inputs) | 6, 29 | planned |
 | 5 DMS candidate inventory | `make stage5` | 9 | 12 | planned — **review stop** |
@@ -51,14 +53,14 @@ a failure. It is listed automatically in the unresolved-issues report (item 15).
 
 ```
 config/                 analysis.yaml, data_sources.yaml (scope, storage, URIs), frozen/
-src/ancal/              pipeline package (settings, budget, status, provenance, sources/, stages/)
+src/ancal/              pipeline package (settings, config, budget, status, provenance, sources/, stages/)
 workflow/Snakefile      one rule per stage
 tests/                  unit tests
 resources/regions/      region BEDs for the current scope (generated)
-data_store/             all data (git-ignored): manifests, reference, population_metadata,
+data_store/             all data (git-ignored): reference, population_metadata,
                         variants, avi, dms, clinvar, intermediate, analysis_datasets
 tables/ figures/        generated outputs
-reports/                qc/, exclusions/, status/, archive/
+reports/                manifests/ (tracked provenance), qc/, exclusions/, status/, archive/
 deliverables/d1/        the data-readiness package index (one row per item 1–15)
 logs/                   per-stage logs
 ```

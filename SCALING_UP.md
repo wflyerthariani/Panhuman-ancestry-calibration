@@ -84,3 +84,4 @@ below as each stage is implemented.
 |---|---|---|
 | 0 | bcftools/tabix/bgzip/samtools/snakemake on PATH; Python imports; `pytest`; disk budget | Run `make env`; read `logs/stage0.log` |
 | 1 | `config/analysis.yaml` and `config/data_sources.yaml` pass the schema (AF bins contiguous, joins on chrom/pos/ref/alt, seven group labels, every source has a URI except AVI); writes `reports/qc/config_status.md` | Read the validation message in `logs/stage1.log`; fix the YAML, never the generated report |
+| 2 | Software manifest written with bcftools/tabix/samtools/snakemake found; one live download (gnomAD `post_qc_summary.tsv`, about 10 KB) recorded with source and output SHA-256; every manifest row has all Step 1 fields | Network: check that `storage.googleapis.com` is reachable. Incomplete row: `logs/stage2.log` names the row and fields |

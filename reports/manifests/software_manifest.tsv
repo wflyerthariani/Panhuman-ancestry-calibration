@@ -1,0 +1,22 @@
+kind	name	version
+platform	os	macOS-14.7.4-x86_64-i386-64bit
+platform	machine	x86_64
+platform	python	3.11.16
+platform	env_prefix	/Users/arman/miniforge3/envs/ancal
+code	ancal	ancal 0.1.0 @ 22b2ed1-dirty
+tool	bcftools	bcftools 1.21
+tool	tabix	tabix (htslib) 1.21
+tool	bgzip	bgzip (htslib) 1.21
+tool	samtools	samtools 1.21
+tool	snakemake	8.30.0
+tool	conda	conda 25.3.0
+tool	git	git version 2.39.5 (Apple Git-154)
+python	polars	1.44.2
+python	pyarrow	25.0.0
+python	pandas	3.0.6
+python	pydantic	2.13.5
+python	PyYAML	6.0.3
+python	requests	2.34.2
+python	fsspec	2026.9.0
+python	pytest	9.1.1
+python	snakemake	8.30.0

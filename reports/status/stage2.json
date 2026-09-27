@@ -1,0 +1,26 @@
+{
+  "stage": "stage2",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 0.02,
+  "checks": [
+    {
+      "name": "software_manifest",
+      "ok": true,
+      "detail": "reports/manifests/software_manifest.tsv"
+    },
+    {
+      "name": "live_fetch",
+      "ok": true,
+      "detail": "post_qc_summary.tsv sha256=b792381670f5\u2026"
+    },
+    {
+      "name": "manifest_complete",
+      "ok": true,
+      "detail": "all rows have every Step 1 field"
+    }
+  ],
+  "notes": "Dataset and software manifest (item 3).",
+  "blocked_reason": "",
+  "written_at": "2026-09-27T06:42:13+00:00"
+}
