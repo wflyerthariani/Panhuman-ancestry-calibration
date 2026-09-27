@@ -99,7 +99,7 @@ def _append(settings: Settings, row: ManifestRow) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     new = not path.exists()
     with open(path, "a", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=[f.name for f in fields(ManifestRow)], delimiter="\t")
+        w = csv.DictWriter(fh, fieldnames=[f.name for f in fields(ManifestRow)], delimiter="\t", lineterminator="\n")
         if new:
             w.writeheader()
         w.writerow(asdict(row))
