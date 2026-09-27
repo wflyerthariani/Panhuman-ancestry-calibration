@@ -16,3 +16,17 @@ rule stage0:
     shell:
         "(pytest -q && ancal check-env --pytest-ok 1 || ancal check-env --pytest-ok 0) > {log} 2>&1; "
         "cat {log}; grep -q '\"status\": \"pass\"' {output}"
+
+
+rule stage1:
+    input:
+        "reports/status/stage0.json",
+        "config/analysis.yaml",
+        "config/data_sources.yaml",
+    output:
+        "reports/status/stage1.json",
+        "reports/qc/config_status.md",
+    log:
+        "logs/stage1.log",
+    shell:
+        "ancal validate-config > {log} 2>&1; rc=$?; cat {log}; exit $rc"

@@ -83,3 +83,4 @@ below as each stage is implemented.
 | Stage | Gate checks | If it fails |
 |---|---|---|
 | 0 | bcftools/tabix/bgzip/samtools/snakemake on PATH; Python imports; `pytest`; disk budget | Run `make env`; read `logs/stage0.log` |
+| 1 | `config/analysis.yaml` and `config/data_sources.yaml` pass the schema (AF bins contiguous, joins on chrom/pos/ref/alt, seven group labels, every source has a URI except AVI); writes `reports/qc/config_status.md` | Read the validation message in `logs/stage1.log`; fix the YAML, never the generated report |

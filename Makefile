@@ -2,9 +2,9 @@
 ENV      ?= ancal
 RUN      := conda run --no-capture-output -n $(ENV)
 SCOPE    ?=
-SMK_ARGS := --snakefile workflow/Snakefile --cores 1 $(if $(SCOPE),--config scope=$(SCOPE),)
+SMK_ARGS := --snakefile workflow/Snakefile --cores 1 --keep-incomplete $(if $(SCOPE),--config scope=$(SCOPE),)
 
-.PHONY: env check-env test budget status stage0
+.PHONY: env check-env test budget status stage0 stage1 freeze-config
 
 ## Create or update the conda environment and install the ancal package into it.
 env:
@@ -31,3 +31,10 @@ status:
 
 stage0:
 	$(RUN) snakemake $(SMK_ARGS) stage0
+
+stage1:
+	$(RUN) snakemake $(SMK_ARGS) stage1
+
+## Only succeeds once every deferred item in config/analysis.yaml is confirmed.
+freeze-config:
+	$(RUN) ancal freeze-config

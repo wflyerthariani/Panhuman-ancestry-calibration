@@ -1,6 +1,7 @@
 # Data locations and storage settings.
-# Stage 0 defines only `scope` and `storage`; source URIs are added in Stage 1.
 # See SCALING_UP.md before changing scope or storage.
+# URIs were checked on 2026-09-26. Each is fetched and recorded in the manifest
+# by the stage that uses it.
 
 # smoke | dms_genes | exome
 scope: smoke
@@ -18,3 +19,75 @@ storage:
     - reports
     - deliverables
     - resources/regions
+
+scopes:
+  smoke:
+    # 2-3 DMS-rich genes on one chromosome; the final choice is made in Stage 4
+    # against the MaveDB inventory.
+    genes: [BRCA1, TP53]
+    contigs: [chr17]
+  dms_genes:
+    genes: from_dms_inventory      # every candidate gene in tables/dms_candidate_inventory.tsv
+    contigs: from_genes
+  exome:
+    genes: all_mane_select
+    contigs: all
+
+sources:
+  population_vcf:
+    name: gnomAD v3.1.2 HGDP+1KG dense callset
+    version: v3.1.2
+    # Per-chromosome, bgzipped + tabix-indexed (about 100-280 GB each). Always read by region.
+    uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.hgdp_tgp.{contig}.vcf.bgz
+    index_suffix: .tbi
+    access: remote_tabix
+
+  sample_metadata:
+    name: gnomAD HGDP+1KG sample metadata and QC (v2 release, Koenig et al. 2024)
+    uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/metadata_and_qc/gnomad_meta_updated.tsv
+    qc_summary_uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/metadata_and_qc/post_qc_summary.tsv
+    access: download   # about 6 MB
+
+  reference_fasta:
+    name: UCSC hg38 per-chromosome FASTA (GRCh38 primary assembly)
+    # Fetched per contig in scope, then uppercased, bgzipped and faidx-indexed.
+    uri: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/{contig}.fa.gz
+    access: download_per_contig   # chr17 is about 25 MB compressed
+
+  gene_annotation:
+    name: GENCODE basic annotation
+    version: v50
+    uri: https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_50/gencode.v50.basic.annotation.gtf.gz
+    access: stream_filter   # keep MANE Select CDS rows only
+
+  alphamissense:
+    name: AlphaMissense hg38 precomputed missense predictions
+    uri: https://storage.googleapis.com/dm_alphamissense/AlphaMissense_hg38.tsv.gz
+    access: stream_filter   # about 640 MB streamed; only in-scope rows kept
+    use: protein-to-genomic coordinate lookup only (AlphaMissense is a component of AVI; see leakage notes)
+
+  clinvar:
+    name: ClinVar GRCh38 VCF
+    uri: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz
+    index_suffix: .tbi
+    access: remote_tabix
+
+  mavedb:
+    name: MaveDB API
+    uri: https://api.mavedb.org/api/v1
+    access: api
+
+  cadd:
+    name: CADD v1.7 GRCh38 SNVs
+    uri: https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/whole_genome_SNVs.tsv.gz
+    index_suffix: .tbi
+    access: remote_tabix
+    used_in: deliverable 2 only (the comparator is not run in deliverable 1)
+
+  avi:
+    name: AlphaGenome Atlas - Aggregate Variant Impact (AVI)
+    uri: null            # set when access is confirmed; see SCALING_UP.md section 3
+    format: null
+    score_field: null
+    direction: null
+    access: null

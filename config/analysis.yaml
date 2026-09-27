@@ -1,0 +1,190 @@
+# Analysis specification (protocol Step 2). DRAFT - not yet frozen.
+#
+# Values the protocol fixes are written directly.
+# Anything the protocol leaves open, or that depends on data not yet seen, is a
+# "deferred" block:
+#     status: pending    - cannot be set until the named stage runs
+#     status: proposed   - drafted here; needs team confirmation
+#     status: confirmed  - agreed; safe to freeze
+# `ancal freeze-config` refuses to run until every deferred block is `confirmed`.
+# Freeze happens after Stage 9 review and BEFORE any performance analysis (Steps 2, 40).
+
+protocol:
+  source: "Slack canvas 'Ancestry calibration audit' (F0C3D5MUBBL), #4-scientific-outputs"
+  author: Caroline Duncan
+  canvas_created: 2026-09-21
+  config_drafted: 2026-09-26
+
+reference_build: GRCh38
+
+chromosomes:
+  status: proposed
+  settled_in: stage1
+  value: [chr1, chr2, chr3, chr4, chr5, chr6, chr7, chr8, chr9, chr10, chr11, chr12,
+          chr13, chr14, chr15, chr16, chr17, chr18, chr19, chr20, chr21, chr22, chrX]
+  note: >-
+    Autosomes + chrX. chrX allele numbers depend on sex (hemizygous males), so AN
+    comes from genotypes, not 2 x N. chrY and chrM are excluded (no DMS genes; low
+    HGDP+1KG call quality).
+
+population_groups:
+  labels: [AFR, AMR, CSA, EAS, EUR, MID, OCE]
+  mapping_file: config/population_groups.yaml
+  mapping:
+    status: pending
+    settled_in: stage3
+    value: null
+    note: >-
+      Generated from the gnomAD HGDP+1KG metadata (the gnomAD genetic-region field
+      maps directly onto the seven labels), then reviewed. The original 80
+      population labels are always kept alongside the group label.
+
+samples:
+  primary_set: unrelated          # Step 4: unrelated samples for primary frequency calculations
+  sensitivity_set: all_eligible   # retained and reported separately
+  exclude_admixed: false          # Step 5: never auto-exclude admixed individuals
+  hprc: excluded_from_primary     # Step 34: HPRC is a separate sensitivity analysis only
+
+dms_gene_universe:
+  status: pending
+  settled_in: stage9
+  value: null
+  note: "Frozen list of Ensembl gene IDs; must be approved before any population comparison (Step 12)."
+
+dms_assays:
+  eligibility_criteria:   # Step 12
+    - variant-level quantitative measurements
+    - effect can be consistently oriented
+    - variants unambiguously identifiable on GRCh38
+    - acceptable assay quality
+    - ">= 20 eligible variants after harmonization"
+    - not excluded for known data leakage
+  min_variants_per_gene: 20
+  eligible_assays:
+    status: pending
+    settled_in: stage5
+    value: null
+    note: "MaveDB score-set URNs, with per-assay direction and quality in config/dms_curation.yaml."
+
+dms_score:
+  harmonized_direction: higher_is_more_damaging   # Step 13
+  per_assay_direction_file: config/dms_curation.yaml
+  pooling: within_assay_percentile                # never pool raw scores across incompatible scales
+  replicate_combination:
+    status: proposed
+    settled_in: stage5
+    value: assay_reported_score
+    note: >-
+      Use the score the assay authors report (already replicate-combined in most
+      MaveDB score sets). Where only replicate-level scores exist, take their mean.
+
+avi_score:
+  status: pending
+  settled_in: stage8
+  value:
+    source: AlphaGenome Atlas - Aggregate Variant Impact (AVI)
+    version: null
+    score_field: null
+    score_range: null
+    native_direction: null        # higher_is_more_damaging | lower_is_more_damaging
+    transform: null               # documented if the native direction is reversed
+    transcript_specific: null
+    multiple_scores_per_variant: null
+    damaging_threshold: null      # Step 31; only if the Atlas defines one
+  note: "Filled in once the Atlas distribution format is inspected (Step 9)."
+
+missing_score_definition:
+  status: proposed
+  settled_in: stage8
+  value: >-
+    A variant is missing an AVI score if there is no AVI record for its exact
+    chrom:pos:ref:alt on GRCh38, or the record's score is null or NaN. Variants
+    whose join is ambiguous or unresolved are counted separately and are not
+    counted as scored.
+  note: "May need revision once the AVI file format is known."
+
+allele_frequency_bins:   # Step 16: global AF from the combined HGDP+1KG resource
+  frequency_source: global_combined
+  bins:
+    - {name: very_rare,     lower: 0.0,   upper: 0.001}
+    - {name: rare,          lower: 0.001, upper: 0.01}
+    - {name: low_frequency, lower: 0.01,  upper: 0.05}
+    - {name: common,        lower: 0.05,  upper: 1.0}
+  interval: left_closed    # [lower, upper); common includes AF = 1.0
+
+precision_criteria:      # Step 18: inferential eligibility of a population group
+  min_evaluable_variants: 200
+  min_represented_genes: 5
+  require_valid_spearman: true
+  max_bootstrap_ci_width: 0.30
+
+metrics:
+  primary:
+    per_population: spearman(avi_score, harmonized_dms_effect)
+    cross_population: range   # max(rho_p) - min(rho_p), before and after AF standardization
+  secondary: [sd, iqr, min_population_rho, heterogeneity]
+
+bootstrap:
+  procedure: hierarchical_gene_then_variant   # Step 19
+  iterations: 2000
+  ci_level: 0.95
+  seed:
+    status: proposed
+    settled_in: stage1
+    value: 20260926
+
+af_standardization:        # Step 21
+  method: stratified_resampling
+  target_distribution: pooled_eligible_variants
+
+classical_comparator:      # Step 23
+  name: CADD
+  score_field: PHRED
+  version:
+    status: proposed
+    settled_in: stage1
+    value: v1.7
+    note: "Latest CADD GRCh38 release. CADD is free for non-commercial use only; the licence is listed in item 15."
+  evaluation_set: intersection_of_variants_scored_by_both
+
+clinvar:                   # Step 29
+  release:
+    status: proposed
+    settled_in: stage4
+    value: resolve_latest_at_fetch
+    note: "Stage 4 records the dated weekly release actually fetched; that date is frozen."
+  consequence: missense
+  positive_class: [Pathogenic, Likely_pathogenic, Pathogenic/Likely_pathogenic]
+  negative_class: [Benign, Likely_benign, Benign/Likely_benign]
+  exclude: [Uncertain_significance, Conflicting_classifications_of_pathogenicity,
+            no_valid_allele_match, no_avi_score, not_coding_missense]
+  keep_fields: [review_status, submitter_info]
+  vus_as_benign: false
+
+coding_definition:
+  status: proposed
+  settled_in: stage4
+  value:
+    annotation: GENCODE v50 basic
+    transcript_set: MANE_Select
+    coding: SNV within a MANE Select CDS
+    missense_source: MANE Select protein consequence
+  note: >-
+    DMS protein positions are matched to MANE Select transcripts. If a DMS assay
+    used a different isoform, it is flagged in dms_curation.yaml.
+noncoding_analysis: not_currently_evaluable   # Step 32: separate MPRA benchmark, not pooled
+
+variant_rules:             # Steps 6, 7, 15
+  primary_variant_type: biallelic_snv          # after splitting multiallelic records
+  retain_other_types_in_master: true
+  variant_id_format: "{chrom}:{pos}:{ref}:{alt}"
+  join_keys: [chrom, pos, ref, alt]            # never rsID
+  source_filter: PASS                          # the source dataset's high-quality filter
+  observed_if: ac_after_qc >= 1
+  exclude_population_variant_if:
+    - allele_number == 0
+    - site not callable in population
+    - alleles cannot be harmonized
+    - reference-build status unresolved
+    - fails source high-quality filter
+  callability_proxy: "AN > 0 (no per-population callability mask is distributed; see item 15)"

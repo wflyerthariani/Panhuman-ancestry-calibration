@@ -1,0 +1,21 @@
+{
+  "stage": "stage1",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 0.0,
+  "checks": [
+    {
+      "name": "schema:analysis.yaml",
+      "ok": true,
+      "detail": "valid"
+    },
+    {
+      "name": "schema:data_sources.yaml",
+      "ok": true,
+      "detail": "valid"
+    }
+  ],
+  "notes": "Draft analysis configuration (item 2). Deferred items: {'pending': 4, 'proposed': 7, 'confirmed': 0}. Not yet frozen.",
+  "blocked_reason": "",
+  "written_at": "2026-09-27T06:38:01+00:00"
+}

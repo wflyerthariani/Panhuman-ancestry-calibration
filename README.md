@@ -35,7 +35,7 @@ a failure. It is listed automatically in the unresolved-issues report (item 15).
 | Stage | Make target | Deliverable items | Protocol steps | Status |
 |---|---|---|---|---|
 | 0 Environment and scaffold | `make stage0` | 1 | 1 | implemented |
-| 1 Analysis configuration | `make stage1` | 2 | 2 | planned |
+| 1 Analysis configuration | `make stage1` | 2 | 2 | implemented — open items in `reports/qc/config_status.md` |
 | 2 Provenance and manifests | `make stage2` | 3 | 1 | planned |
 | 3 Samples and populations | `make stage3` | 4, 5, 6 | 3–5 | planned |
 | 4 Reference and annotation (scope-aware) | `make stage4` | (inputs) | 6, 29 | planned |
