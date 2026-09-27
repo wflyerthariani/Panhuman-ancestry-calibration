@@ -1,0 +1,19 @@
+name: ancal
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - bcftools=1.21
+  - htslib=1.21
+  - samtools=1.21
+  - snakemake-minimal=8.*
+  - polars
+  - pyarrow
+  - pandas
+  - pydantic=2.*
+  - pyyaml
+  - requests
+  - fsspec
+  - pytest
+  - pip

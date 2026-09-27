@@ -1,0 +1,81 @@
+{
+  "stage": "stage0",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 0.0,
+  "checks": [
+    {
+      "name": "tool:bcftools",
+      "ok": true,
+      "detail": "bcftools 1.21"
+    },
+    {
+      "name": "tool:tabix",
+      "ok": true,
+      "detail": "tabix (htslib) 1.21"
+    },
+    {
+      "name": "tool:bgzip",
+      "ok": true,
+      "detail": "bgzip (htslib) 1.21"
+    },
+    {
+      "name": "tool:samtools",
+      "ok": true,
+      "detail": "samtools 1.21"
+    },
+    {
+      "name": "tool:snakemake",
+      "ok": true,
+      "detail": "8.30.0"
+    },
+    {
+      "name": "python:polars",
+      "ok": true,
+      "detail": "1.44.2"
+    },
+    {
+      "name": "python:pyarrow",
+      "ok": true,
+      "detail": "25.0.0"
+    },
+    {
+      "name": "python:pandas",
+      "ok": true,
+      "detail": "3.0.6"
+    },
+    {
+      "name": "python:pydantic",
+      "ok": true,
+      "detail": "2.13.5"
+    },
+    {
+      "name": "python:yaml",
+      "ok": true,
+      "detail": "6.0.3"
+    },
+    {
+      "name": "python:requests",
+      "ok": true,
+      "detail": "2.34.2"
+    },
+    {
+      "name": "python:fsspec",
+      "ok": true,
+      "detail": "2026.9.0"
+    },
+    {
+      "name": "disk_budget",
+      "ok": true,
+      "detail": "0.0 MB of 1.0 GB"
+    },
+    {
+      "name": "pytest",
+      "ok": true,
+      "detail": "unit tests"
+    }
+  ],
+  "notes": "Environment and repository scaffold (item 1).",
+  "blocked_reason": "",
+  "written_at": "2026-09-27T06:32:00+00:00"
+}

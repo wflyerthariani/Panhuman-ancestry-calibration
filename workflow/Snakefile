@@ -1,0 +1,18 @@
+# Deliverable 1 pipeline. One target per stage; each stage's gate writes
+# reports/status/<stage>.json and exits non-zero on fail, which halts downstream rules.
+# Stages are added here as they are implemented (see README.md).
+
+import os
+
+if "scope" in config:
+    os.environ["ANCAL_SCOPE"] = config["scope"]
+
+
+rule stage0:
+    output:
+        "reports/status/stage0.json",
+    log:
+        "logs/stage0.log",
+    shell:
+        "(pytest -q && ancal check-env --pytest-ok 1 || ancal check-env --pytest-ok 0) > {log} 2>&1; "
+        "cat {log}; grep -q '\"status\": \"pass\"' {output}"

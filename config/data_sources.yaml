@@ -1,0 +1,20 @@
+# Data locations and storage settings.
+# Stage 0 defines only `scope` and `storage`; source URIs are added in Stage 1.
+# See SCALING_UP.md before changing scope or storage.
+
+# smoke | dms_genes | exome
+scope: smoke
+
+storage:
+  # All data files resolve under this root. Relative paths are relative to the repo.
+  root: ./data_store
+  # Hard cap on local disk used by data_store/ plus generated outputs.
+  local_budget_gb: 1.0
+  # Directories (relative to repo) counted against the budget in addition to root.
+  counted_output_dirs:
+    - tables
+    - figures
+    - logs
+    - reports
+    - deliverables
+    - resources/regions
