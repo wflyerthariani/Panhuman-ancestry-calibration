@@ -150,13 +150,18 @@ def calibration_evidence(rec: dict, score_median: float | None) -> tuple[str | N
 # ------------------------------------------------------------ evidence: controls
 
 _SINGLE = re.compile(r"^p\.\(?([A-Z][a-z]{2})(\d+)([A-Z][a-z]{2}|=|\*)\)?$")
+_FRAMESHIFT = re.compile(r"^p\.\(?[A-Z][a-z]{2}\d+(?:[A-Z][a-z]{2})?fs")
 
 
 def classify_hgvs_pro(h: str | None) -> str:
+    """missense / synonymous / nonsense / frameshift / other, for a single protein change."""
     if not h or h in ("NA", "_wt", "_sy"):
         return "synonymous" if h == "_sy" else "other"
+    h = h.split(":", 1)[1] if ":" in h else h  # drop an accession prefix such as NP_000537.3:
     if h in ("p.=", "p.(=)"):
         return "synonymous"
+    if _FRAMESHIFT.match(h):
+        return "frameshift"
     m = _SINGLE.match(h)
     if not m:
         return "other"  # multi-mutants, indels, frameshifts, p.? ...
@@ -180,48 +185,74 @@ class ControlStats:
     n_scored: int
     n_missense: int
     n_synonymous: int
-    n_nonsense: int
+    n_truncating: int          # nonsense + frameshift
     median_missense: float | None
     median_synonymous: float | None
-    median_nonsense: float | None
+    median_truncating: float | None
     median_all: float | None
-    auc_nonsense_vs_synonymous: float | None
+    auc: float | None          # P(truncating scores higher than the reference class)
+    basis: str                 # truncating_vs_synonymous | truncating_vs_missense | none
     direction: str | None
     summary: str
+    protein_column: str = "hgvs_pro"
+
+
+def _protein_column(df: pl.DataFrame) -> str | None:
+    if "hgvs_pro" in df.columns and df["hgvs_pro"].drop_nulls().len():
+        return "hgvs_pro"
+    for c in df.columns:  # some submitters put protein HGVS in their own column
+        if re.search(r"hgvs.*prot|prot.*hgvs", c, re.I) and df[c].drop_nulls().len():
+            return c
+    return None
 
 
 def control_stats(scores_csv: Path) -> ControlStats:
+    """Direction evidence from built-in controls.
+
+    Preferred: truncating (nonsense + frameshift) vs synonymous. Fallback when synonymous
+    variants are missing: truncating vs missense. This is weaker evidence, because missense
+    variants are a mixture of tolerated and damaging ones.
+    """
     raw = gzip.decompress(scores_csv.read_bytes())
     df = pl.read_csv(io.BytesIO(raw), infer_schema_length=0, null_values=["NA", ""])
     if "score" not in df.columns:
-        return ControlStats(0, 0, 0, 0, None, None, None, None, None, None, "no 'score' column")
+        return ControlStats(0, 0, 0, 0, None, None, None, None, None, "none", None, "no 'score' column")
     df = df.with_columns(pl.col("score").cast(pl.Float64, strict=False)).filter(
         pl.col("score").is_not_null() & pl.col("score").is_finite())
-    hgvs = df["hgvs_pro"] if "hgvs_pro" in df.columns else pl.Series([None] * df.height, dtype=pl.String)
-    df = df.with_columns(pl.Series("cls", [classify_hgvs_pro(h) for h in hgvs.to_list()]))
+    col = _protein_column(df)
+    hgvs = df[col].to_list() if col else [None] * df.height
+    cls = ["truncating" if c in ("nonsense", "frameshift") else c for c in map(classify_hgvs_pro, hgvs)]
+    df = df.with_columns(pl.Series("cls", cls))
+
+    def scores(c):
+        return df.filter(pl.col("cls") == c)["score"].to_list()
 
     def med(c):
         s = df.filter(pl.col("cls") == c)["score"]
         return float(s.median()) if s.len() else None
 
-    syn = df.filter(pl.col("cls") == "synonymous")["score"].to_list()
-    non = df.filter(pl.col("cls") == "nonsense")["score"].to_list()
-    n_mis = df.filter(pl.col("cls") == "missense").height
-    a, direction = None, None
-    if len(syn) >= MIN_CONTROLS and len(non) >= MIN_CONTROLS:
-        a = auc(non, syn)
+    syn, trunc, mis = scores("synonymous"), scores("truncating"), scores("missense")
+    a, basis, direction = None, "none", None
+    if len(trunc) >= MIN_CONTROLS and len(syn) >= MIN_CONTROLS:
+        a, basis, ref, ref_name = auc(trunc, syn), "truncating_vs_synonymous", syn, "synonymous"
+    elif len(trunc) >= MIN_CONTROLS and len(mis) >= MIN_CONTROLS:
+        a, basis, ref, ref_name = auc(trunc, mis), "truncating_vs_missense", mis, "missense"
+    if a is not None:
         if a >= 0.5 + AUC_CLEAR:
             direction = "higher_is_more_damaging"
         elif a <= 0.5 - AUC_CLEAR:
             direction = "lower_is_more_damaging"
-        summary = (f"nonsense (n={len(non)}, median {med('nonsense'):.3g}) vs synonymous (n={len(syn)}, median "
-                   f"{med('synonymous'):.3g}); AUC {a:.2f}")
-    elif "hgvs_pro" not in df.columns or df.filter(pl.col("cls") != "other").height == 0:
+        summary = (f"truncating (n={len(trunc)}, median {med('truncating'):.3g}) vs {ref_name} (n={len(ref)}, "
+                   f"median {med(ref_name):.3g}); AUC {a:.2f}"
+                   + (" [weaker: no synonymous controls]" if basis == "truncating_vs_missense" else ""))
+    elif col is None:
         summary = "no protein-level HGVS; controls not classifiable"
     else:
-        summary = f"too few controls (nonsense {len(non)}, synonymous {len(syn)}; need {MIN_CONTROLS} each)"
-    return ControlStats(df.height, n_mis, len(syn), len(non), med("missense"), med("synonymous"), med("nonsense"),
-                        float(df["score"].median()) if df.height else None, a, direction, summary)
+        summary = (f"too few controls (truncating {len(trunc)}, synonymous {len(syn)}, missense {len(mis)}; "
+                   f"need {MIN_CONTROLS} truncating plus {MIN_CONTROLS} synonymous or missense)")
+    return ControlStats(df.height, len(mis), len(syn), len(trunc), med("missense"), med("synonymous"),
+                        med("truncating"), float(df["score"].median()) if df.height else None, a, basis,
+                        direction, summary, col or "")
 
 
 # ----------------------------------------------------------------- author text
@@ -245,10 +276,15 @@ def author_excerpts(rec: dict, limit: int = 3) -> list[str]:
 
 def propose(cal_dir: str | None, ctl: ControlStats | None) -> tuple[str, str]:
     ctl_dir = ctl.direction if ctl else None
+    weak = ctl is not None and ctl.basis == "truncating_vs_missense"
     if cal_dir and ctl_dir:
-        return (cal_dir, "high") if cal_dir == ctl_dir else ("conflict", "none")
-    if cal_dir or ctl_dir:
-        return cal_dir or ctl_dir, "medium"
+        if cal_dir != ctl_dir:
+            return "conflict", "none"
+        return cal_dir, "medium" if weak else "high"
+    if cal_dir:
+        return cal_dir, "medium"
+    if ctl_dir:
+        return ctl_dir, "low" if weak else "medium"
     return "unknown", "none"
 
 
@@ -257,10 +293,13 @@ def quality_flags(rec: dict, ctl: ControlStats | None, gene_note: str) -> list[s
     if ctl is None:
         flags.append("scores_not_downloaded_at_this_scope")
     else:
-        if ctl.auc_nonsense_vs_synonymous is None:
-            flags.append("no_nonsense_synonymous_controls")
-        elif abs(ctl.auc_nonsense_vs_synonymous - 0.5) < AUC_CLEAR:
-            flags.append("weak_control_separation")
+        if ctl.auc is None:
+            flags.append("no_usable_controls")
+        else:
+            if ctl.basis == "truncating_vs_missense":
+                flags.append("no_synonymous_controls")
+            if abs(ctl.auc - 0.5) < AUC_CLEAR:
+                flags.append("weak_control_separation")
         if ctl.n_missense < MIN_VARIANTS:
             flags.append(f"fewer_than_{MIN_VARIANTS}_scored_missense")
     ms = rec.get("mappingState")
@@ -362,8 +401,8 @@ def run(settings: Settings, refresh: bool = False) -> status.StageStatus:
             "calibration_direction": cal_dir or "",
             "control_summary": ctl.summary if ctl else "not computed at this scope",
             "control_direction": (ctl.direction or "") if ctl else "",
-            "auc_nonsense_vs_synonymous": round(ctl.auc_nonsense_vs_synonymous, 3)
-            if ctl and ctl.auc_nonsense_vs_synonymous is not None else None,
+            "control_basis": ctl.basis if ctl else "",
+            "control_auc": round(ctl.auc, 3) if ctl and ctl.auc is not None else None,
             "n_scored": ctl.n_scored if ctl else None,
             "n_missense_scored": ctl.n_missense if ctl else None,
             "proposed_direction": prop,
@@ -416,7 +455,7 @@ def merge_curation(inv: pl.DataFrame, path: Path) -> pl.DataFrame:
     """Regenerate the evidence columns; keep whatever reviewers have written."""
     cols = ["score_set_urn", "gene_symbol", "in_scope", "prescreen_status", "exclusion_reason", "title",
             "experimental_phenotype", "assay_method", "n_variants", "calibration_direction", "control_direction",
-            "auc_nonsense_vs_synonymous", "proposed_direction", "direction_confidence", "quality_flags"]
+            "control_basis", "control_auc", "proposed_direction", "direction_confidence", "quality_flags"]
     fresh = inv.select(cols)
     if path.exists():
         old = pl.read_csv(path, separator="\t", infer_schema_length=0).select(["score_set_urn", *REVIEWER_COLUMNS])
@@ -485,20 +524,36 @@ Your job is to confirm or correct it.
 - **A. Calibration.** Some MaveDB score sets have been calibrated, often against ClinVar
   variants, into ranges labelled *normal* and *abnormal* function. If the abnormal range sits
   below the normal range, lower scores mean damage. Only a minority of assays have one.
-- **B. Built-in controls.** Nonsense variants (premature stop, e.g. `p.Arg213Ter`) almost always
-  destroy function, and synonymous variants (e.g. `p.Arg213=`) almost never do. The pipeline
-  compares their scores:
-  - **AUC** is the probability that a random nonsense variant scores higher than a random
+- **B. Built-in controls.** Truncating variants almost always destroy function: nonsense
+  variants (premature stop, e.g. `p.Arg213Ter`) and frameshifts (e.g. `p.Tyr126LeufsTer22`).
+  Synonymous variants (e.g. `p.Arg213=`) almost never do. The pipeline compares their scores:
+  - **AUC** is the probability that a random truncating variant scores higher than a random
     synonymous one.
   - **AUC near 1:** high score = damaging. **AUC near 0:** low score = damaging.
-  - **AUC near 0.5:** the assay does not separate them, which is a warning sign for quality,
-    or the assay measures something where truncation is not "damaging" in the assay's terms.
-  - **Caveat:** nonsense variants near the protein's C-terminus may escape nonsense-mediated
-    decay and behave like missense variants. Assays that start downstream of the protein may
-    show little separation.
+  - **AUC near 0.5:** the assay does not separate them. This is a warning sign for quality, or
+    the assay measures something where truncation is not "damaging" in the assay's own terms.
+    For example, in a dominant-negative selection a truncated protein cannot interfere with
+    the wild-type protein.
+  - **If an assay has no synonymous variants**, truncating variants are compared with all
+    missense variants instead. This is weaker evidence, because missense variants are a mix of
+    harmless and damaging ones. It is marked "[weaker: no synonymous controls]".
+  - **Caveat:** truncations near the protein's C-terminus may escape nonsense-mediated decay
+    and behave like missense variants.
 - **C. Author text.** Sentences from the MaveDB description that mention the score. They are
   shown verbatim; the pipeline does not interpret them. Please check them against A and B,
   and follow the MaveDB link or the paper when they are unclear.
+
+### How the proposal is made
+
+| Calibration (A) | Controls (B) | Proposal | Confidence |
+|---|---|---|---|
+| direction X | direction X, vs synonymous | X | high |
+| direction X | direction X, vs missense only | X | medium |
+| direction X | none | X | medium |
+| none | direction X, vs synonymous | X | medium |
+| none | direction X, vs missense only | X | low |
+| direction X | direction Y | `conflict` | none — you must decide |
+| none | none | `unknown` | none — you must decide |
 
 ## What to decide for each assay
 
@@ -545,8 +600,9 @@ your five columns are kept.
 
 | Flag | Meaning |
 |---|---|
-| `weak_control_separation` | Nonsense vs synonymous AUC is between 0.25 and 0.75 |
-| `no_nonsense_synonymous_controls` | Fewer than {MIN_CONTROLS} of either class had a score, or no protein-level HGVS |
+| `weak_control_separation` | The controls' AUC is between 0.25 and 0.75 |
+| `no_synonymous_controls` | Direction from controls is based on truncating vs missense (weaker) |
+| `no_usable_controls` | Fewer than {MIN_CONTROLS} truncating variants, or no protein-level HGVS: evidence B is unavailable |
 | `fewer_than_{MIN_VARIANTS}_scored_missense` | Too few single missense variants to be useful |
 | `genomic_mapping_incomplete` / `_failed` | MaveDB could not map every variant to GRCh38. Stage 6 falls back to protein-level mapping |
 | `licence_CC_BY-NC-SA_4.0` | Non-commercial licence (see limitation L-05) |

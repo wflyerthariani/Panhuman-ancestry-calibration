@@ -1,0 +1,31 @@
+{
+  "stage": "stage5",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 49.33,
+  "checks": [
+    {
+      "name": "mavedb_snapshot",
+      "ok": true,
+      "detail": "1201 published human score sets"
+    },
+    {
+      "name": "every_record_classified",
+      "ok": true,
+      "detail": "1033 candidates, 168 excluded by pre-screen"
+    },
+    {
+      "name": "scope_genes_have_candidates",
+      "ok": true,
+      "detail": "23 in-scope candidate assays"
+    },
+    {
+      "name": "disk_budget",
+      "ok": true,
+      "detail": "49.3 MB"
+    }
+  ],
+  "notes": "DMS inventory (item 9). REVIEW STOP: 0/23 in-scope assays reviewed. Biologist review: reports/review/dms_direction_review.md -> config/dms_curation.tsv.",
+  "blocked_reason": "",
+  "written_at": "2026-09-27T08:06:17+00:00"
+}
