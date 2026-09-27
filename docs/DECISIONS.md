@@ -28,7 +28,9 @@ Protocol source: Caroline Duncan's Slack canvas "Ancestry calibration audit"
 | R-04 | **Two unexplained exclusions.** HGDP01371 (Basque) and LP6005441-DNA_A09 (Naxi) pass gnomAD's hard filters and are not PCA outliers, but are absent from Koenig's post-QC release. The reason is not documented. | Exclude them, following the release. Record the reason as `not_in_koenig_post_qc_release`. | `tables/sample_metadata.tsv` | open |
 | R-05 | **OCE may miss the inferential criteria.** OCE has 30 post-QC samples, 27 unrelated, across 3 populations. It may not reach ≥200 evaluable variants and ≥5 genes (Step 18). | Stage 11 will estimate this at `dms_genes` scope. If OCE fails, it stays descriptive only, as the protocol already specifies. | Stage 11 | watch |
 | R-06 | **Proposed analysis settings awaiting confirmation** (the smoke run used ClinVar **2026-09-23**; see D-024) (all `status: proposed` in `config/analysis.yaml`). | Chromosomes chr1–22 + chrX (no Y/M) · CADD **v1.7** as the comparator · GENCODE **v50** MANE Select as the coding definition · bootstrap seed 20260926 · ClinVar = latest weekly release, date recorded at fetch · DMS replicates = the assay-reported score (mean where only replicates exist) · missing AVI score = no record for the exact chrom:pos:ref:alt, or a null/NaN score · population mapping = `config/population_groups.yaml`. | `reports/qc/config_status.md` | open |
-| R-07 | **Items still pending on data.** These are settled by later stages: AVI score field and direction (Stage 8, needs Atlas access), DMS assay list and per-assay direction and quality (Stage 5, review stop), and the DMS gene universe (Stage 9, review stop). | — | `config/analysis.yaml` | pending |
+| R-08 | **DMS score direction and quality review (smoke scope).** 23 BRCA1/TP53 assays need a biologist's decision. Proposals: 14 lower-is-damaging, 3 higher-is-damaging, **2 conflicts**, **4 unknown**. The conflicts are the TP53 assays in p53 wild-type cells under nutlin (`00000068-a-1`, `00001235-a-1`): dominant-negative variants enrich there, while truncating variants cannot act dominant-negatively. So "damaging" needs defining for those assays. | A reviewer follows `reports/review/dms_direction_review.md` and fills `config/dms_curation.tsv`. Stage 6 will not run until every in-scope assay has a decision. | `config/dms_curation.tsv` | **open — review stop** |
+| R-09 | **Review workload at `dms_genes` scope.** 1,033 candidate assays across 527 genes. At 5–10 minutes each, that is about 85–170 hours. | Options for the team: (a) first drop genes that cannot reach ≥20 population-observed variants (this does not depend on direction, so it could run before review); (b) accept proposals where calibration and controls agree (`high` confidence), with a spot-check sample, and review the rest in full; (c) split the review across several people by gene family. | — | open — needs a decision before scaling up |
+| R-07 | **Items still pending on data.** These are settled by later stages: AVI score field and direction (Stage 8, needs Atlas access), DMS assay list and per-assay direction and quality (Stage 5 review, R-08), and the DMS gene universe (Stage 9, review stop). | — | `config/analysis.yaml` | pending |
 
 ---
 
@@ -187,6 +189,70 @@ and fixed), and reports do not contain run dates; run times are in the manifest.
 metadata), so the one made during the smoke run is reused. If it is missing, Stage 4 reports
 `blocked` with instructions rather than failing.
 
+### DMS candidate inventory (Stage 5)
+
+**D-029 — MaveDB snapshot.** There are 1,201 published human score sets (MaveDB API
+2026.2.7.3, taken 2026-09-27). Full records, the mapped-gene table and each downloaded score
+CSV are saved under `data_store/dms/mavedb/` and recorded in the manifest. Re-runs reuse the
+snapshot, so the inventory does not change silently as MaveDB grows; `ancal stage5 --refresh`
+takes a new one. Snapshots are gzip-written with a fixed timestamp, so identical content gives
+identical checksums.
+
+**D-030 — Each score set is resolved to one MANE Select gene**, in this order: MaveDB's own
+GRCh38 mapping (527), an Ensembl gene ID (42), UniProt accession to primary gene name (434,
+UniProt release 2026_03), then the first word of the target name (165). 31 are unresolved,
+and 2 have multi-gene targets. When methods disagree, the record is flagged
+`gene_resolution_conflict`; there were none in this snapshot. UniProt was added as a source
+because many targets are named informally (e.g. "p53", "alpha-synuclein").
+
+**D-031 — The automatic pre-screen applies only exclusions the protocol requires outright.**
+168 are excluded:
+- 98 meta-analyses: combined or classifier scores built from other score sets, not direct
+  measurements. The underlying assays stay in.
+- 41 noncoding targets: regulatory elements, which Step 32 keeps as a separate benchmark.
+- 17 unresolved genes, 7 with fewer than 20 variants, 3 genes outside MANE Select, and
+  2 multi-gene panels.
+- None superseded: MaveDB records supersession only on the newer record, and the code handles
+  that.
+
+**1,033 candidates across 527 genes remain.** Every record, including excluded ones, is in
+`tables/dms_candidate_inventory.tsv` with its reason.
+
+**D-032 — Direction evidence, gathered for in-scope candidates only.**
+- **A. Calibrations.** Normal and abnormal ranges from MaveDB score calibrations. Only 82 of
+  1,201 score sets have one.
+- **B. Built-in controls.** Truncating variants (nonsense *and* frameshift) against synonymous
+  variants, measured as AUC. |AUC − 0.5| ≥ 0.25 counts as a clear direction, and at least 10 of
+  each class are needed.
+  - If there are no synonymous variants, truncating variants are compared with missense
+    instead. This is marked *weaker* and lowers confidence.
+  - Protein HGVS is read from `hgvs_pro`, or from a submitter column such as
+    `HGVS(protein)`, with any `NP_…:` prefix removed.
+- **C. Author text.** Excerpts are shown verbatim and never parsed into a decision.
+- **Confidence levels.** `high` means A and B agree with B against synonymous. `medium` or
+  `low` means one source, or the weaker B. `conflict` or `unknown` means a person must decide.
+- **Development check:** the first version counted only nonsense variants and missed
+  frameshifts and custom protein columns. 13 of 23 assays then had no control evidence. After
+  the fix, 19 of 23 have a proposal.
+
+**D-033 — The review sheet is a TSV (`config/dms_curation.tsv`), not the YAML in the plan.**
+Biologists can edit it in Excel or Google Sheets. Evidence columns are regenerated on every run.
+The five reviewer columns (`reviewer_decision`, `reviewer_direction`, `reviewer_notes`,
+`reviewer_name`, `reviewed_on`) are always preserved. MaveDB free text is stripped of line breaks
+and tabs, because they were breaking TSV rows. The reviewer's guide is
+`reports/review/dms_direction_review.md`: numbered steps, background, one evidence card per
+assay, and sibling score sets from the same experiment (to avoid counting one measurement
+twice).
+
+**D-034 — Scores are downloaded only for in-scope candidates.** At smoke scope that is 23
+files, 9.9 MB. Downloading all 1,033 candidates at `dms_genes` scope is estimated at about
+**0.25 GB** (3.6 M variants at about 69 bytes each).
+
+**D-035 — Stage 6 gate.** DMS harmonization will refuse to run until every in-scope candidate has
+a `reviewer_decision`, and every included one has a `reviewer_direction`. Scores whose raw
+direction is `lower_is_more_damaging` are reversed there. The original score is always kept
+(Step 13).
+
 ---
 
 ## 3. Known limitations (inputs to item 15)
@@ -197,6 +263,6 @@ metadata), so the one made during the smoke run is reused. If it is missing, Sta
 | L-02 | **AVI (AlphaGenome Atlas) access and format unknown.** | Stage 8 (item 8) is `blocked` until the source is set. | `SCALING_UP.md` §3. |
 | L-03 | **No per-population callability mask** is distributed with the HGDP+1KG callset. | "Callable" cannot be tested directly (Step 7). | AN > 0 is used as a proxy, and this is documented. |
 | L-04 | **CADD is licensed for non-commercial use only.** | This may restrict use of the comparator in a commercial context. | Confirm the licence position with the team. |
-| L-05 | **Per-dataset licences of MaveDB score sets vary.** | Some DMS sets may not be redistributable. | Stage 5 records each score set's licence. |
+| L-05 | **Per-dataset licences of MaveDB score sets vary.** Of 1,201: 1,170 CC0, 14 CC BY 4.0, 11 CC BY-SA 4.0 and **6 CC BY-NC-SA 4.0**. | The NC-SA sets may not be usable commercially or redistributable. | Each licence is recorded in the inventory; NC sets are flagged `licence_CC_BY-NC-SA_4.0` on review cards. |
 | L-06 | **Hail Table decoder covers one layout only** (D-016). | A future re-release in a different format would stop Stage 3. | The decoder fails loudly; the fallback is to read the table with Hail. |
 | L-07 | **AlphaMissense is licensed CC BY-NC-SA 4.0 (non-commercial, share-alike).** | This may restrict commercial use of anything derived from the protein-to-genome lookup. AVI itself includes AlphaMissense, so the AVI licence needs checking too (L-02). | Confirm the licence position with the team, alongside CADD (L-04). |

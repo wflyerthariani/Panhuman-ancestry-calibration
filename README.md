@@ -47,7 +47,7 @@ a failure. It is listed automatically in the unresolved-issues report (item 15).
 | 2 Provenance and manifests | `make stage2` | 3 | 1 | implemented — `reports/manifests/` |
 | 3 Samples and populations | `make stage3` | 4, 5, 6 | 3–5 | implemented — **review stop**: `reports/qc/sample_count_report.md` |
 | 4 Reference and annotation (scope-aware) | `make stage4` | (inputs) | 6, 29 | implemented — `reports/qc/reference_report.md` |
-| 5 DMS candidate inventory | `make stage5` | 9 | 12 | planned — **review stop** |
+| 5 DMS candidate inventory | `make stage5` | 9 | 12 | implemented — **review stop**: biologist guide `reports/review/dms_direction_review.md` → `config/dms_curation.tsv` |
 | 6 DMS harmonization | `make stage6` | 11 | 13 | planned |
 | 7 Population variants | `make stage7` | 7 | 6–8 | planned |
 | 8 AVI join and coverage | `make stage8` | 8 | 9–11 | planned (needs AVI access) |

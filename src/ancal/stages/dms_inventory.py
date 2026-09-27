@@ -414,6 +414,8 @@ def run(settings: Settings, refresh: bool = False) -> status.StageStatus:
             "_excerpts": author_excerpts(rec) if (reason is None and scope_hit) else [],
         })
     inv = pl.DataFrame(rows, infer_schema_length=None)
+    # MaveDB free text can contain CR/LF and tabs, which break TSV rows in spreadsheets.
+    inv = inv.with_columns(pl.col(pl.String).str.replace_all(r"[\r\n\t]+", " ").str.strip_chars())
 
     tables = settings.root / "tables"
     inv.drop("_excerpts").write_csv(tables / "dms_candidate_inventory.tsv", separator="\t")
@@ -477,7 +479,12 @@ def write_review_guide(settings, review: pl.DataFrame, curation: pl.DataFrame, s
     by_urn = {r["score_set_urn"]: r for r in curation.iter_rows(named=True)}
     counts = review.group_by("proposed_direction").len().sort("proposed_direction")
     cards = []
+    experiment = lambda urn: urn.rsplit("-", 1)[0]  # noqa: E731  urn:mavedb:00000003-a-1 -> ...-a
+    by_exp: dict[str, list[str]] = {}
+    for u in review["score_set_urn"]:
+        by_exp.setdefault(experiment(u), []).append(u)
     for i, r in enumerate(review.sort("gene_symbol", "score_set_urn").iter_rows(named=True), start=1):
+        siblings = [u for u in by_exp[experiment(r["score_set_urn"])] if u != r["score_set_urn"]]
         excerpts = "\n".join(f"   > {e}" for e in r["_excerpts"]) or "   > (no sentence about score meaning found — see the MaveDB page)"
         done = by_urn.get(r["score_set_urn"], {}).get("reviewer_decision") or "**not yet reviewed**"
         cards.append(f"""### {i}. {r['gene_symbol']} — {r['title']}
@@ -489,6 +496,7 @@ def write_review_guide(settings, review: pl.DataFrame, curation: pl.DataFrame, s
 - **Variants:** {r['n_variants']} in MaveDB, {_fmt(r['n_scored'])} with a numeric score, {_fmt(r['n_missense_scored'])} single missense
 - **Replicates:** {r['replicate_availability']}
 - **Genome mapping by MaveDB:** {r['genomic_mapping_state']}
+- **Same experiment as:** {', '.join(f"`{u}`" for u in siblings) if siblings else 'no other in-scope score set'}
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
@@ -504,6 +512,28 @@ C. What the authors say about the score:
 
 **Who this is for:** someone with a molecular biology or genetics background. No coding needed.
 **Time needed:** about 5–10 minutes per assay. **Assays to review at this scope (`{scope}`):** {review.height}.
+
+## Steps
+
+1. **Open `config/dms_curation.tsv`** in Excel or Google Sheets. Filter `in_scope` = `true` and
+   `prescreen_status` = `candidate`; these rows are already at the top.
+2. **For each row, read its card below** (same order, numbered). Each card gives what was
+   measured, three kinds of evidence about the score's direction, and the pipeline's proposal.
+   Open the MaveDB page or the paper whenever the card is not enough.
+3. **Decide:**
+   - include or exclude the assay
+   - for included assays, which direction the raw score runs
+   See "What to decide for each assay" and "Questions to ask yourself" below.
+4. **Fill in the five reviewer columns** (`reviewer_decision`, `reviewer_direction`,
+   `reviewer_notes`, `reviewer_name`, `reviewed_on`). Leave every other column unchanged.
+   Write a note whenever you disagree with the proposal or exclude an assay.
+5. **Save as tab-separated text** with the same file name. In Excel: *File → Save As →
+   Text (Tab delimited)*. In Google Sheets: *File → Download → .tsv*. Send the file to Arman,
+   or commit it if you work in the repository. The pipeline keeps your five columns whenever
+   it regenerates the sheet.
+
+If something on a card looks wrong (wrong gene, missing controls, an odd target), say so in
+`reviewer_notes`. That is useful even if you cannot decide the direction.
 
 ## Why this review is needed
 

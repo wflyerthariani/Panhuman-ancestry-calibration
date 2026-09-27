@@ -66,11 +66,11 @@ dms_assays:
     status: pending
     settled_in: stage5
     value: null
-    note: "MaveDB score-set URNs, with per-assay direction and quality in config/dms_curation.yaml."
+    note: "MaveDB score-set URNs with reviewer_decision = include in config/dms_curation.tsv (Stage 5 review)."
 
 dms_score:
   harmonized_direction: higher_is_more_damaging   # Step 13
-  per_assay_direction_file: config/dms_curation.yaml
+  per_assay_direction_file: config/dms_curation.tsv   # reviewer_direction column (Stage 5 review)
   pooling: within_assay_percentile                # never pool raw scores across incompatible scales
   replicate_combination:
     status: proposed
@@ -173,7 +173,7 @@ coding_definition:
     missense_source: MANE Select protein consequence
   note: >-
     DMS protein positions are matched to MANE Select transcripts. If a DMS assay
-    used a different isoform, it is flagged in dms_curation.yaml.
+    used a different isoform, the reviewer notes it in config/dms_curation.tsv.
 noncoding_analysis: not_currently_evaluable   # Step 32: separate MPRA benchmark, not pooled
 
 variant_rules:             # Steps 6, 7, 15

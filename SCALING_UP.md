@@ -35,7 +35,8 @@ make clean-scope SCOPE=smoke     # optional: archives smoke outputs to reports/a
 make stage4     # regions BED (genes from the Stage 5 inventory made during the smoke run),
                 # reference for every contig in scope, AlphaMissense + ClinVar subsets
 make stage5     # DMS inventory + scores for all candidate genes
-                # STOP: review config/dms_curation.yaml (score direction, quality)
+                # STOP: biologist review of config/dms_curation.tsv
+                # (guide: reports/review/dms_direction_review.md; see R-09 on workload)
 make stage6     # DMS harmonization
 make stage7     # gnomAD sites; the longest step, resumable per chromosome
 make stage8     # AVI join and coverage (needs AVI access, see section 3)
@@ -88,3 +89,4 @@ below as each stage is implemented.
 | 2 | Software manifest written with bcftools/tabix/samtools/snakemake found; one live download (gnomAD `post_qc_summary.tsv`, about 10 KB) recorded with source and output SHA-256; every manifest row has all Step 1 fields | Network: check that `storage.googleapis.com` is reachable. Incomplete row: `logs/stage2.log` names the row and fields |
 | 3 | Every post-QC sample has one population label and one group label; 4,094 samples and 80 populations; per-population counts equal Koenig et al.'s published post-QC counts; unrelated/related counts equal their released PCA sets (3,400 / 694); every post-QC sample is in the VCF header; the VCF contig length matches GRCh38 | A count mismatch means the gnomAD release files changed: compare the ETags in `reports/manifests/data_manifest.tsv` and read `reports/qc/sample_count_report.md`. The related-ID decoder refuses unfamiliar Hail formats; if so, read the table with Hail instead. Stage 3 does not depend on scope (sample metadata is always fetched in full, about 7 MB) |
 | 4 | 19,000+ MANE Select transcripts, one per gene, with CDS lengths that are multiples of 3; every scope gene found; each reference contig has the GRCh38 length and only ACGTN; every AlphaMissense and ClinVar REF allele equals the GRCh38 base; ClinVar comes from a dated release that did not change during the read; disk budget | `blocked` at `dms_genes` scope if `tables/dms_candidate_inventory.tsv` is missing: run Stage 5 first. A REF mismatch means a build or contig-naming problem: stop and investigate, do not filter it away. About 3 minutes at smoke scope, most of it streaming AlphaMissense (643 MB) |
+| 5 | MaveDB snapshot taken or reused; every published human score set classified (candidate or excluded, with a reason); every scope gene has at least one candidate assay; disk budget. The stage **passes** before review, and its status note shows how many in-scope assays are reviewed | A MaveDB outage gives HTTP errors after 5 retries, so run it again later. To pick up new MaveDB records, run `ancal stage5 --refresh` (this changes the inventory, so note it in `docs/DECISIONS.md`). About 1 minute for a fresh snapshot |
