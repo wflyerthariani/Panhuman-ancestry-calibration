@@ -29,7 +29,7 @@ storage:
 HGDP+1KG sites across the coding exons of every candidate DMS gene. Genotypes are
 never stored.
 
-```
+```sh
 make clean-scope SCOPE=smoke     # optional: archives smoke outputs to reports/archive/smoke_<date>/
 # set `scope: dms_genes` in config/data_sources.yaml
 make stage4     # regions BED, full reference, AlphaMissense + ClinVar subsets
@@ -61,7 +61,7 @@ avi:
 
 Then run:
 
-```
+```sh
 make stage8 && make stage9 stage10 stage11
 ```
 

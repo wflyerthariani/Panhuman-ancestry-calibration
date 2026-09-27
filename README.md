@@ -10,6 +10,12 @@ data-readiness package**. Deliverable 1 calculates **no performance metrics**
 (no AVI–DMS correlations, CADD comparisons or ClinVar AUROCs). Those wait until
 after the Step 40 review and config freeze.
 
+## Decisions and open review items
+
+**[docs/DECISIONS.md](docs/DECISIONS.md)** records every important decision, discovery and deferred
+question, with its evidence. It also holds the open review checklist for the team. It is
+updated in every stage. Start there before reading any output.
+
 ## Rules
 
 - **Never edit files by hand** in `data_store/`, `tables/`, `reports/` or `deliverables/`.
@@ -22,7 +28,7 @@ after the Step 40 review and config freeze.
 
 ## Setup
 
-```
+```sh
 make env          # create/update the `ancal` conda env (bcftools, samtools, snakemake, polars, ...)
 make stage0       # Stage 0 gate: tools, imports, unit tests, disk budget
 make status       # one line per stage: pass / fail / blocked
@@ -51,7 +57,7 @@ a failure. It is listed automatically in the unresolved-issues report (item 15).
 
 ## Layout
 
-```
+```sh
 config/                 analysis.yaml, data_sources.yaml (scope, storage, URIs), frozen/
 src/ancal/              pipeline package (settings, config, budget, status, provenance, sources/, stages/)
 workflow/Snakefile      one rule per stage
