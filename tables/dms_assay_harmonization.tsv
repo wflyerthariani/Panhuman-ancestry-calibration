@@ -1,0 +1,24 @@
+score_set_urn	gene_symbol	decision	raw_direction	direction_source	direction_confidence	assay_exclusion_reason	n_rows	mapping_method	ref_match_rate	n_changes	n_missense_changes	n_scored	numbering_offset	n_snvs_mapped	n_missense_snvs_mapped	harmonization_status
+urn:mavedb:00000003-a-1	BRCA1	include	lower_is_more_damaging	provisional_proposal	medium	""	20724	hgvs_pro	0.996644	1193	1135	11530	1	1392	1326	harmonized
+urn:mavedb:00000003-a-2	BRCA1	include	lower_is_more_damaging	provisional_proposal	low	""	12316	hgvs_pro	0.996689	3848	3701	6847	1	1694	1613	harmonized
+urn:mavedb:00000003-b-1	BRCA1	exclude	""	provisional_proposal	none	no_direction_proposal (unknown); needs review										not_harmonized
+urn:mavedb:00000003-b-2	BRCA1	exclude	""	provisional_proposal	none	no_direction_proposal (unknown); needs review										not_harmonized
+urn:mavedb:00000081-a-1	BRCA1	exclude	""	provisional_proposal	none	no_direction_proposal (unknown); needs review										not_harmonized
+urn:mavedb:00000081-a-2	BRCA1	include	lower_is_more_damaging	provisional_proposal	low	""	2820	hgvs_pro	1.000000	2820	2749	2820	0	1033	997	harmonized
+urn:mavedb:00000093-a-1	BRCA1	exclude	""	provisional_proposal	none	no_direction_proposal (unknown); needs review										not_harmonized
+urn:mavedb:00001222-a-2	BRCA1	include	lower_is_more_damaging	provisional_proposal	medium	""	1427	hgvs_pro	1.000000	1427	1359	1427	1672	709	681	harmonized
+urn:mavedb:00001222-b-2	BRCA1	include	lower_is_more_damaging	provisional_proposal	medium	""	2271	hgvs_pro	0.996516	2261	2140	2271	1576	901	857	harmonized
+urn:mavedb:00000059-a-1	TP53	include	higher_is_more_damaging	provisional_proposal	medium	""	9273	hgvs_pro	1.000000	3341	2967	9273	101	1713	1251	harmonized
+urn:mavedb:00000068-a-1	TP53	exclude	""	provisional_proposal	none	no_direction_proposal (conflict); needs review										not_harmonized
+urn:mavedb:00000068-b-1	TP53	include	higher_is_more_damaging	provisional_proposal	high	""	8274	hgvs_pro	0.994924	8216	7429	8258	0	3528	2563	harmonized
+urn:mavedb:00000068-c-1	TP53	include	lower_is_more_damaging	provisional_proposal	high	""	8274	hgvs_pro	0.994924	8216	7429	8258	0	3528	2563	harmonized
+urn:mavedb:00001213-a-1	TP53	include	higher_is_more_damaging	provisional_proposal	medium	""	8052	hgvs_pro	1.000000	3776	3423	8052	0	1631	1195	harmonized
+urn:mavedb:00001234-a-1	TP53	include	lower_is_more_damaging	provisional_proposal	medium	""	2314	hgvs_pro	1.000000	2314	2314	2314	0	2569	2569	harmonized
+urn:mavedb:00001234-b-1	TP53	include	lower_is_more_damaging	provisional_proposal	medium	""	2314	hgvs_pro	1.000000	2314	2314	2314	0	2569	2569	harmonized
+urn:mavedb:00001234-c-1	TP53	include	lower_is_more_damaging	provisional_proposal	medium	""	2314	hgvs_pro	1.000000	2314	2314	2314	0	2569	2569	harmonized
+urn:mavedb:00001234-d-1	TP53	include	lower_is_more_damaging	provisional_proposal	medium	""	2314	hgvs_pro	1.000000	2314	2314	2314	0	2569	2569	harmonized
+urn:mavedb:00001234-e-1	TP53	include	lower_is_more_damaging	provisional_proposal	medium	""	2314	hgvs_pro	1.000000	2314	2314	2314	0	2569	2569	harmonized
+urn:mavedb:00001234-f-1	TP53	include	lower_is_more_damaging	provisional_proposal	medium	""	2314	hgvs_pro	1.000000	2314	2314	2314	0	2569	2569	harmonized
+urn:mavedb:00001234-g-1	TP53	include	lower_is_more_damaging	provisional_proposal	medium	""	2314	hgvs_pro	1.000000	2314	2314	2314	0	2569	2569	harmonized
+urn:mavedb:00001234-h-1	TP53	include	lower_is_more_damaging	provisional_proposal	medium	""	2314	hgvs_pro	1.000000	2314	2314	2314	0	2569	2569	harmonized
+urn:mavedb:00001235-a-1	TP53	exclude	""	provisional_proposal	none	no_direction_proposal (conflict); needs review										not_harmonized

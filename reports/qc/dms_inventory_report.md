@@ -60,7 +60,7 @@ Conflicts between methods are flagged for review.
 ## Not decided here
 
 - **Direction and assay quality** need a biologist's review (`reports/review/dms_direction_review.md`).
-- **"At least 20 eligible variants after harmonization"** is applied in Stage 9, once variants
-  are joined to the population data.
+- **"At least 20 eligible variants after harmonization"** is applied in Stage 9, which reports
+  both the harmonized count and the count observed in the population data.
 - **Known data leakage** (assays used to train AVI's components) is assessed in Stage 9 and in
   the leakage log (Step 35).

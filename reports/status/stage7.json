@@ -1,0 +1,56 @@
+{
+  "stage": "stage7",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 53.0,
+  "checks": [
+    {
+      "name": "samples",
+      "ok": true,
+      "detail": "3,400 unrelated (primary), 4,094 all eligible; 80 populations"
+    },
+    {
+      "name": "sites_extracted",
+      "ok": true,
+      "detail": "250 records after normalization; 250 unique variants on chr17"
+    },
+    {
+      "name": "unique_variant_ids",
+      "ok": true,
+      "detail": "one row per chrom:pos:ref:alt"
+    },
+    {
+      "name": "long_table_complete",
+      "ok": true,
+      "detail": "44,000 rows = 250 variants x 176 population/group/set levels"
+    },
+    {
+      "name": "allele_number_within_bounds",
+      "ok": true,
+      "detail": "0 rows with AN > 2 x samples"
+    },
+    {
+      "name": "counts_consistent",
+      "ok": true,
+      "detail": "0 variants whose population counts do not sum to the group or overall count"
+    },
+    {
+      "name": "reference_alleles",
+      "ok": true,
+      "detail": "0 variants with a REF that differs from GRCh38 (excluded and listed)"
+    },
+    {
+      "name": "primary_snvs",
+      "ok": true,
+      "detail": "234 PASS SNVs in scope regions; 233 observed in the unrelated set"
+    },
+    {
+      "name": "disk_budget",
+      "ok": true,
+      "detail": "53.0 MB of 1.0 GB"
+    }
+  ],
+  "notes": "Normalized population-variant table (item 7).",
+  "blocked_reason": "",
+  "written_at": "2026-10-12T16:23:41+00:00"
+}

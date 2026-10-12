@@ -1,0 +1,10 @@
+{
+  "stage": "stage8",
+  "status": "blocked",
+  "scope": "smoke",
+  "disk_used_mb": 53.0,
+  "checks": [],
+  "notes": "AVI join and coverage report (item 8).",
+  "blocked_reason": "The AVI source is not configured: `sources.avi.uri` in config/data_sources.yaml is null. Access to the AlphaGenome Atlas AVI scores has not been arranged (L-02).",
+  "written_at": "2026-10-12T16:23:41+00:00"
+}

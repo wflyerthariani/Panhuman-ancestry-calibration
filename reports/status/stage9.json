@@ -1,0 +1,31 @@
+{
+  "stage": "stage9",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 53.0,
+  "checks": [
+    {
+      "name": "criteria_basis",
+      "ok": true,
+      "detail": "at least 20 harmonized_missense_snvs"
+    },
+    {
+      "name": "every_scope_gene_assessed",
+      "ok": true,
+      "detail": "2 candidate genes in scope"
+    },
+    {
+      "name": "every_exclusion_has_a_reason",
+      "ok": true,
+      "detail": "2 proposed for inclusion, 0 proposed for exclusion"
+    },
+    {
+      "name": "disk_budget",
+      "ok": true,
+      "detail": "53.0 MB of 1.0 GB"
+    }
+  ],
+  "notes": "Proposed DMS gene universe (item 10). Not frozen: needs team approval. PROVISIONAL at smoke scope.",
+  "blocked_reason": "",
+  "written_at": "2026-10-12T16:23:42+00:00"
+}

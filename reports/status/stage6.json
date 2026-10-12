@@ -1,0 +1,51 @@
+{
+  "stage": "stage6",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 53.0,
+  "checks": [
+    {
+      "name": "review_gate",
+      "ok": true,
+      "detail": "mode=provisional; 0/23 in-scope assays reviewed; 23 use proposals (PROVISIONAL)"
+    },
+    {
+      "name": "consequence_table",
+      "ok": true,
+      "detail": "20,304 coding SNVs in 2 genes"
+    },
+    {
+      "name": "alphamissense_cross_check",
+      "ok": true,
+      "detail": "protein change agrees for 15,032 of 15,032 AlphaMissense SNVs"
+    },
+    {
+      "name": "scores_available",
+      "ok": true,
+      "detail": "all included assays have score files"
+    },
+    {
+      "name": "assays_harmonized",
+      "ok": true,
+      "detail": "17 of 17 included assays"
+    },
+    {
+      "name": "unique_variant_per_assay",
+      "ok": true,
+      "detail": "0 duplicate (variant, assay) rows"
+    },
+    {
+      "name": "percentile_range",
+      "ok": true,
+      "detail": "within (0, 1]"
+    },
+    {
+      "name": "disk_budget",
+      "ok": true,
+      "detail": "53.0 MB of 1.0 GB"
+    }
+  ],
+  "notes": "DMS harmonization (item 11). PROVISIONAL: 23 assays not yet reviewed.",
+  "blocked_reason": "",
+  "written_at": "2026-10-12T16:23:07+00:00"
+}

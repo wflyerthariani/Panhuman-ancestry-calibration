@@ -1,0 +1,46 @@
+{
+  "stage": "stage11",
+  "status": "pass",
+  "scope": "smoke",
+  "disk_used_mb": 53.01,
+  "checks": [
+    {
+      "name": "attrition_table",
+      "ok": true,
+      "detail": "176 rows; counts never increase along the funnel"
+    },
+    {
+      "name": "exclusion_log_complete",
+      "ok": true,
+      "detail": "247 variants with an alternate allele in an eligible sample; each is retained or has a reason"
+    },
+    {
+      "name": "seven_groups_forecast",
+      "ok": true,
+      "detail": "0 of 7 groups expected to meet the count criteria (upper bound; AVI pending)"
+    },
+    {
+      "name": "unresolved_issues",
+      "ok": true,
+      "detail": "28 entries (stages not passed, limitations, review items)"
+    },
+    {
+      "name": "earlier_stages",
+      "ok": true,
+      "detail": "every earlier stage is pass or blocked"
+    },
+    {
+      "name": "disk_budget",
+      "ok": true,
+      "detail": "53.0 MB of 1.0 GB"
+    },
+    {
+      "name": "package_files_present",
+      "ok": true,
+      "detail": "every passed item has its files"
+    }
+  ],
+  "notes": "Attrition table, inferential forecast, unresolved issues and package index (items 13-15).",
+  "blocked_reason": "",
+  "written_at": "2026-10-12T16:23:44+00:00"
+}

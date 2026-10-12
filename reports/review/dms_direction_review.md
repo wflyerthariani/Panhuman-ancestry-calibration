@@ -624,5 +624,9 @@ C. What the authors say about the score:
 
 ## When you are done
 
-Tell Arman. The next pipeline stage (DMS harmonization) refuses to run until every in-scope
-assay has a `reviewer_decision`, and every included assay has a `reviewer_direction`.
+Tell Arman. With `review_gates.dms_review: strict` in `config/data_sources.yaml`, the next stage
+(DMS harmonization) refuses to run until every in-scope assay has a `reviewer_decision`, and
+every included assay has a `reviewer_direction`. With `provisional`, unreviewed assays use the
+proposal above, every downstream output is marked PROVISIONAL, and the config cannot be frozen.
+Also check `numbering_offset` in `tables/dms_assay_harmonization.tsv`: a non-zero value means the
+pipeline shifted the assay's residue numbering to match the MANE Select protein.
