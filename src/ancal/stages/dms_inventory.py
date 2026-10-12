@@ -648,8 +648,12 @@ your five columns are kept.
 
 ## When you are done
 
-Tell Arman. The next pipeline stage (DMS harmonization) refuses to run until every in-scope
-assay has a `reviewer_decision`, and every included assay has a `reviewer_direction`.
+Tell Arman. With `review_gates.dms_review: strict` in `config/data_sources.yaml`, the next stage
+(DMS harmonization) refuses to run until every in-scope assay has a `reviewer_decision`, and
+every included assay has a `reviewer_direction`. With `provisional`, unreviewed assays use the
+proposal above, every downstream output is marked PROVISIONAL, and the config cannot be frozen.
+Also check `numbering_offset` in `tables/dms_assay_harmonization.tsv`: a non-zero value means the
+pipeline shifted the assay's residue numbering to match the MANE Select protein.
 """
     out = settings.root / "reports" / "review" / "dms_direction_review.md"
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -711,8 +715,8 @@ Conflicts between methods are flagged for review.
 ## Not decided here
 
 - **Direction and assay quality** need a biologist's review (`reports/review/dms_direction_review.md`).
-- **"At least 20 eligible variants after harmonization"** is applied in Stage 9, once variants
-  are joined to the population data.
+- **"At least 20 eligible variants after harmonization"** is applied in Stage 9, which reports
+  both the harmonized count and the count observed in the population data.
 - **Known data leakage** (assays used to train AVI's components) is assessed in Stage 9 and in
   the leakage log (Step 35).
 """

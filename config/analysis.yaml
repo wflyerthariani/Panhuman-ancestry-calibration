@@ -62,6 +62,15 @@ dms_assays:
     - ">= 20 eligible variants after harmonization"
     - not excluded for known data leakage
   min_variants_per_gene: 20
+  min_variants_basis:
+    status: proposed
+    settled_in: stage9
+    value: harmonized_missense_snvs
+    note: >-
+      What "at least 20 eligible variants after harmonization" counts. harmonized_missense_snvs:
+      distinct missense SNVs with a harmonized DMS measurement (the protocol's wording).
+      population_observed_missense_snvs: those also observed in at least one study population.
+      Stage 9 reports both counts for every gene.
   eligible_assays:
     status: pending
     settled_in: stage5

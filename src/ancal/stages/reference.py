@@ -151,7 +151,21 @@ class IntervalIndex:
 def fetch_reference(settings: Settings, uri_template: str, contig: str) -> Path:
     dest = settings.data_dir("reference") / f"GRCh38.{contig}.fa.gz"
     uri = uri_template.format(contig=contig)
-    if not provenance.recorded_row(settings, dest, uri):
+    if "{contig}" not in uri_template:
+        # One local, faidx-indexed genome FASTA instead of per-chromosome files: extract the contig.
+        if "://" in uri and not uri.startswith("file://"):
+            raise ValueError("a whole-genome reference_fasta.uri must be a local path; remote sources need {contig} in the URI")
+        path = uri.removeprefix("file://")
+        if not provenance.recorded_row(settings, dest, uri):
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            cmd = (f"set -o pipefail; samtools faidx {path} {contig} | awk '/^>/ {{print; next}} {{print toupper($0)}}' "
+                   f"| bgzip -c > {dest}")
+            subprocess.run(["bash", "-c", cmd], check=True)
+            provenance.record(settings, dest, stage="stage4", source_name=f"GRCh38 {contig} (from local genome FASTA)",
+                              command=cmd, software_name="samtools", software_version=_version("samtools"), input_uri=uri,
+                              reference_build="GRCh38", input_info=provenance.head(path))
+            Path(f"{dest}.fai").unlink(missing_ok=True)
+    elif not provenance.recorded_row(settings, dest, uri):
         provenance.stream_filter(
             settings, uri, dest, transform=lambda l: l if l.startswith(">") else l.upper(),
             stage="stage4", source_name=f"UCSC hg38 {contig}", reference_build="GRCh38",
@@ -201,6 +215,16 @@ class ClinVarRelease:
 
 def resolve_clinvar(src: config.Source) -> ClinVarRelease:
     date = src.release
+    if src.uri.startswith("file://") or "://" not in src.uri:
+        # A local ClinVar VCF is used as it is. Its release date comes from `release:` or the file header.
+        path = src.uri.removeprefix("file://")
+        if not date or date == "latest":
+            header = subprocess.run(["bcftools", "view", "-h", path], capture_output=True, text=True, check=True).stdout
+            m = re.search(r"^##fileDate=(\d{4})-?(\d{2})-?(\d{2})", header, re.M)
+            if not m:
+                raise RuntimeError("the local ClinVar VCF has no ##fileDate; set clinvar.release to its date (YYYYMMDD)")
+            date = "".join(m.groups())
+        return ClinVarRelease(date, path, provenance.head(path))
     if not date or date == "latest":
         header = subprocess.run(["bcftools", "view", "-h", src.uri], capture_output=True, text=True, check=True).stdout
         m = re.search(r"^##fileDate=(\d{4})-?(\d{2})-?(\d{2})", header, re.M)
@@ -222,7 +246,7 @@ def subset_clinvar(settings: Settings, src: config.Source, bed: pl.DataFrame, sc
     rel = resolve_clinvar(src)
     d = settings.data_dir("clinvar")
     tbi = d / f"clinvar_{rel.date}.vcf.gz.tbi"
-    provenance.fetch(settings, rel.uri + ".tbi", tbi, stage="stage4", source_name="ClinVar tabix index",
+    provenance.fetch(settings, rel.uri + (src.index_suffix or ".tbi"), tbi, stage="stage4", source_name="ClinVar tabix index",
                      database_version=rel.date, reference_build="GRCh38")
 
     # ClinVar uses 1..22,X; the rest of the pipeline uses chr1..chr22,chrX.

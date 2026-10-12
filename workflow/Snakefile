@@ -1,6 +1,6 @@
 # Deliverable 1 pipeline. One target per stage; each stage's gate writes
 # reports/status/<stage>.json and exits non-zero on fail, which halts downstream rules.
-# Stages are added here as they are implemented (see README.md).
+# `d1` runs everything. A `blocked` stage exits 0, so later stages still run and report what they can.
 
 import os
 
@@ -86,3 +86,35 @@ rule stage5:
         "logs/stage5.log",
     shell:
         "ancal stage5 > {log} 2>&1; rc=$?; cat {log}; exit $rc"
+
+
+# Stages 6-11 declare only their status file as output: a blocked stage writes nothing else.
+LATER = {
+    6: ["reports/status/stage5.json", "config/dms_curation.tsv", "config/data_sources.yaml"],
+    7: ["reports/status/stage6.json"],
+    8: ["reports/status/stage7.json", "config/data_sources.yaml"],
+    9: ["reports/status/stage8.json", "config/analysis.yaml"],
+    10: ["reports/status/stage9.json"],
+    11: ["reports/status/stage10.json", "docs/DECISIONS.md"],
+}
+
+for _n, _inputs in LATER.items():
+
+    rule:
+        name:
+            f"stage{_n}"
+        input:
+            _inputs,
+        output:
+            f"reports/status/stage{_n}.json",
+        log:
+            f"logs/stage{_n}.log",
+        params:
+            stage=f"stage{_n}",
+        shell:
+            "ancal {params.stage} > {log} 2>&1; rc=$?; cat {log}; exit $rc"
+
+
+rule d1:
+    input:
+        "reports/status/stage11.json",

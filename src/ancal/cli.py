@@ -177,6 +177,39 @@ def cmd_stage5(args) -> int:
     return _run_stage("stage5", lambda s: dms_inventory.run(s, refresh=args.refresh))
 
 
+def _stage_cmd(module: str, name: str):
+    def cmd(args) -> int:
+        mod = importlib.import_module(f".stages.{module}", __package__)
+        return _run_stage(name, mod.run)
+    return cmd
+
+
+LATER_STAGES = (
+    ("stage6", "dms_harmonize", "Stage 6: DMS harmonization"),
+    ("stage7", "population_variants", "Stage 7: normalized population variants and per-population counts"),
+    ("stage8", "avi_join", "Stage 8: AVI join and coverage (blocked until the AVI source is configured)"),
+    ("stage9", "gene_universe", "Stage 9: proposed DMS gene universe"),
+    ("stage10", "clinvar_eligibility", "Stage 10: ClinVar coding-missense eligibility"),
+    ("stage11", "package", "Stage 11: attrition, inferential forecast, unresolved issues, package index"),
+)
+
+
+def cmd_archive_scope(args) -> int:
+    """Copy the generated outputs of the current scope to reports/archive/<scope>_<date>/."""
+    from datetime import date
+
+    s = load_settings()
+    dest = s.root / "reports" / "archive" / f"{s.scope}_{date.today().isoformat()}"
+    if dest.exists():
+        print(f"{dest.relative_to(s.root)} already exists; nothing copied", file=sys.stderr)
+        return 1
+    for rel in ("tables", "reports/qc", "reports/exclusions", "reports/status", "reports/review", "deliverables/d1"):
+        if (s.root / rel).exists():
+            shutil.copytree(s.root / rel, dest / rel)
+    print(f"Archived to {dest.relative_to(s.root)}")
+    return 0
+
+
 def cmd_status(args) -> int:
     s = load_settings()
     rows = status.read_all(s)
@@ -219,6 +252,13 @@ def main(argv: list[str] | None = None) -> int:
     s5 = sub.add_parser("stage5", help="Stage 5: DMS candidate inventory and direction/quality review sheet")
     s5.add_argument("--refresh", action="store_true", help="take a new MaveDB snapshot instead of reusing the saved one")
     s5.set_defaults(func=cmd_stage5)
+
+    for name, module, text in LATER_STAGES:
+        sp = sub.add_parser(name, help=text)
+        sp.set_defaults(func=_stage_cmd(module, name))
+
+    ar = sub.add_parser("archive-scope", help="Copy the current scope's outputs to reports/archive/")
+    ar.set_defaults(func=cmd_archive_scope)
 
     st = sub.add_parser("status", help="Show the status of every stage run so far")
     st.set_defaults(func=cmd_status)

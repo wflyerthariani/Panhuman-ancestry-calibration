@@ -5,8 +5,9 @@ Pipeline for **Outcome 1** of the PanHuman scientific outputs: does the AlphaGen
 of the gnomAD-harmonized HGDP + 1000 Genomes callset?
 
 The analysis protocol is Caroline Duncan's "Ancestry calibration audit" canvas
-(#4-scientific-outputs). This repository currently builds **deliverable 1, the
-data-readiness package**. Deliverable 1 calculates **no performance metrics**
+(#4-scientific-outputs). This repository builds **deliverable 1, the data-readiness package**
+(protocol Steps 1–16, 18, 29, 35 and 39, up to the Step 40 review). The performance analysis of
+the second deliverable (Steps 17 and 19–38) is not implemented here. Deliverable 1 calculates **no performance metrics**
 (no AVI–DMS correlations, CADD comparisons or ClinVar AUROCs). Those wait until
 after the Step 40 review and config freeze.
 
@@ -36,9 +37,20 @@ make status       # one line per stage: pass / fail / blocked
 
 ## Stages
 
-Run the stages one at a time. Each one writes `reports/status/stageN.json` and stops the
-pipeline if its gate fails. A `blocked` stage (missing access or too little disk) is not
-a failure. It is listed automatically in the unresolved-issues report (item 15).
+`make d1` runs every stage that is out of date, in order, and prints the status of each.
+`make stageN` runs up to one stage. Each stage writes `reports/status/stageN.json` and stops the
+pipeline if its gate fails. A `blocked` stage (missing access, a pending review, too little disk)
+is not a failure: later stages still run and report what they can, and the block is listed
+automatically in the unresolved-issues report (item 15).
+
+Two settings in `config/data_sources.yaml` decide how far an end-to-end run gets:
+
+- **`review_gates.dms_review`**: `provisional` lets Stage 6 run on the pipeline's proposed score
+  directions for assays nobody has reviewed yet, and marks everything downstream PROVISIONAL.
+  `strict` blocks Stage 6 until the review in `config/dms_curation.tsv` is complete, and is
+  required before the config can be frozen.
+- **`sources.avi`**: while `uri` is null, Stage 8 is blocked and Stages 9–11 report AVI-dependent
+  counts as not available (evaluable-variant counts become upper bounds).
 
 | Stage | Make target | Deliverable items | Protocol steps | Status |
 |---|---|---|---|---|
@@ -48,18 +60,19 @@ a failure. It is listed automatically in the unresolved-issues report (item 15).
 | 3 Samples and populations | `make stage3` | 4, 5, 6 | 3–5 | implemented — **review stop**: `reports/qc/sample_count_report.md` |
 | 4 Reference and annotation (scope-aware) | `make stage4` | (inputs) | 6, 29 | implemented — `reports/qc/reference_report.md` |
 | 5 DMS candidate inventory | `make stage5` | 9 | 12 | implemented — **review stop**: biologist guide `reports/review/dms_direction_review.md` → `config/dms_curation.tsv` |
-| 6 DMS harmonization | `make stage6` | 11 | 13 | planned |
-| 7 Population variants | `make stage7` | 7 | 6–8 | planned |
-| 8 AVI join and coverage | `make stage8` | 8 | 9–11 | planned (needs AVI access) |
-| 9 Proposed DMS gene universe | `make stage9` | 10 | 12, 15 | planned — **review stop** |
-| 10 ClinVar eligibility | `make stage10` | 12 | 29 | planned |
-| 11 Attrition, forecast, issues, package | `make stage11` | 13, 14, 15 | 14, 18 | planned |
+| 6 DMS harmonization | `make stage6` | 11 | 13 | implemented — `reports/qc/dms_harmonization_report.md` |
+| 7 Population variants | `make stage7` | 7 | 6–8 | implemented — `reports/qc/variant_normalization_report.md` |
+| 8 AVI join and coverage | `make stage8` | 8 | 9–11 | implemented — **blocked** until the `avi:` source is set in `config/data_sources.yaml` |
+| 9 Proposed DMS gene universe | `make stage9` | 10 | 12, 35 | implemented — **review stop**: `reports/qc/gene_universe_report.md` |
+| 10 ClinVar eligibility | `make stage10` | 12 | 29 | implemented — `reports/qc/clinvar_eligibility_report.md` |
+| 11 Attrition, forecast, issues, package | `make stage11` | 13, 14, 15 | 14, 15, 18, 39 | implemented — `deliverables/d1/README.md` |
 
 ## Layout
 
 ```sh
 config/                 analysis.yaml, data_sources.yaml (scope, storage, URIs), frozen/
-src/ancal/              pipeline package (settings, config, budget, status, provenance, sources/, stages/)
+src/ancal/              pipeline package (settings, config, budget, status, provenance, consequence,
+                        sources/, stages/)
 workflow/Snakefile      one rule per stage
 tests/                  unit tests
 resources/regions/      region BEDs for the current scope (generated)

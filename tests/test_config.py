@@ -26,6 +26,13 @@ def _edit(repo: Path, fn):
     path.write_text(yaml.safe_dump(cfg))
 
 
+def _set_dms_review(repo: Path, mode: str):
+    path = repo / "config" / "data_sources.yaml"
+    ds = yaml.safe_load(path.read_text())
+    ds["review_gates"] = {"dms_review": mode}
+    path.write_text(yaml.safe_dump(ds))
+
+
 def test_repo_configs_validate():
     config.load_analysis(REPO)
     config.load_data_sources(REPO)
@@ -57,6 +64,10 @@ def test_freeze_when_all_confirmed(repo):
         walk(cfg)
 
     _edit(repo, confirm_all)
+    _set_dms_review(repo, "provisional")
+    with pytest.raises(config.NotFreezable, match="dms_review"):   # unreviewed assays may not be frozen in
+        config.freeze(repo, today=date(2026, 10, 1))
+    _set_dms_review(repo, "strict")
     out = config.freeze(repo, today=date(2026, 10, 1))
     assert out.name == "analysis_2026-10-01.yaml"
     assert out.read_text().startswith("# FROZEN 2026-10-01")

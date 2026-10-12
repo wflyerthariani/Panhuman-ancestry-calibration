@@ -20,6 +20,13 @@ storage:
     - deliverables
     - resources/regions
 
+review_gates:
+  # strict:      Stage 6 is blocked until every in-scope assay in config/dms_curation.tsv has a
+  #              reviewer decision (D-035). Required before the config can be frozen.
+  # provisional: unreviewed assays use the pipeline's proposed direction (assays whose proposal is
+  #              `conflict` or `unknown` are left out). Every output is marked PROVISIONAL.
+  dms_review: provisional
+
 scopes:
   smoke:
     # 2-3 DMS-rich genes on one chromosome; the final choice is made in Stage 4
@@ -109,7 +116,11 @@ sources:
   avi:
     name: AlphaGenome Atlas - Aggregate Variant Impact (AVI)
     uri: null            # set when access is confirmed; see SCALING_UP.md section 3
-    format: null
-    score_field: null
-    direction: null
+    format: null         # tsv | csv | parquet | vcf
+    score_field: null    # column (or VCF INFO tag) holding the AVI score
+    direction: null      # higher_is_more_damaging | lower_is_more_damaging
+    # Optional. Column names, if they are not CHROM/POS/REF/ALT (any case):
+    # columns: {chrom: chromosome, pos: position, ref: ref_allele, alt: alt_allele, transcript: transcript_id}
+    # damaging_threshold: 0.5    # only if the Atlas defines one (Step 31)
+    index_suffix: .tbi   # tsv/vcf only: used for region access when <uri><suffix> exists
     access: null

@@ -65,6 +65,7 @@ class Samples(Strict):
 class DmsAssays(Strict):
     eligibility_criteria: list[str]
     min_variants_per_gene: int = Field(ge=1)
+    min_variants_basis: Deferred
     eligible_assays: Deferred
 
 
@@ -212,9 +213,11 @@ class Source(Strict):
     dated_uris: list[str] | None = None
     use: str | None = None
     used_in: str | None = None
-    format: str | None = None
+    format: Literal["tsv", "csv", "parquet", "vcf"] | None = None
     score_field: str | None = None
-    direction: str | None = None
+    direction: Literal["higher_is_more_damaging", "lower_is_more_damaging"] | None = None
+    columns: dict[str, str] | None = None   # AVI only: chrom / pos / ref / alt / transcript column names
+    damaging_threshold: float | None = None
 
 
 REQUIRED_SOURCES = (
@@ -223,9 +226,14 @@ REQUIRED_SOURCES = (
 )
 
 
+class ReviewGates(Strict):
+    dms_review: Literal["strict", "provisional"] = "strict"
+
+
 class DataSources(Strict):
     scope: Literal["smoke", "dms_genes", "exome"]
     storage: Storage
+    review_gates: ReviewGates = ReviewGates()
     scopes: dict[Literal["smoke", "dms_genes", "exome"], ScopeDef]
     sources: dict[str, Source]
 
@@ -282,6 +290,9 @@ def freeze(root: Path, today: date | None = None) -> Path:
     if open_items:
         lines = "\n".join(f"  - {p}: {d.status} (settled in {d.settled_in})" for p, d in open_items)
         raise NotFreezable(f"Cannot freeze: {len(open_items)} item(s) not confirmed:\n{lines}")
+    if load_data_sources(root).review_gates.dms_review != "strict":
+        raise NotFreezable("Cannot freeze: review_gates.dms_review is 'provisional' in config/data_sources.yaml. "
+                           "Finish the DMS review, set it to 'strict' and re-run from Stage 6.")
 
     today = today or date.today()
     src = root / "config" / "analysis.yaml"

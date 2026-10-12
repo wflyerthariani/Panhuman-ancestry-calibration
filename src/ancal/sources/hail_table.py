@@ -44,6 +44,9 @@ class UnsupportedHailTable(ValueError):
 
 
 def _get(url: str) -> bytes:
+    if url.startswith("file://") or "://" not in url:   # a local copy of the table directory
+        with open(url.removeprefix("file://"), "rb") as fh:
+            return fh.read()
     r = requests.get(url, timeout=60)
     r.raise_for_status()
     return r.content

@@ -27,9 +27,14 @@ Protocol source: Caroline Duncan's Slack canvas "Ancestry calibration audit"
 | R-03 | **List of recently admixed populations.** ACB, ASW, CLM, MXL, PEL and PUR are flagged. None are excluded (Step 5). | Keep this list. Decide whether any HGDP populations (for example Hazara or Uygur) should also be flagged. | `tables/population_mapping.tsv` | open |
 | R-04 | **Two unexplained exclusions.** HGDP01371 (Basque) and LP6005441-DNA_A09 (Naxi) pass gnomAD's hard filters and are not PCA outliers, but are absent from Koenig's post-QC release. The reason is not documented. | Exclude them, following the release. Record the reason as `not_in_koenig_post_qc_release`. | `tables/sample_metadata.tsv` | open |
 | R-05 | **OCE may miss the inferential criteria.** OCE has 30 post-QC samples, 27 unrelated, across 3 populations. It may not reach ≥200 evaluable variants and ≥5 genes (Step 18). | Stage 11 will estimate this at `dms_genes` scope. If OCE fails, it stays descriptive only, as the protocol already specifies. | Stage 11 | watch |
-| R-06 | **Proposed analysis settings awaiting confirmation** (the smoke run used ClinVar **2026-09-23**; see D-024) (all `status: proposed` in `config/analysis.yaml`). | Chromosomes chr1–22 + chrX (no Y/M) · CADD **v1.7** as the comparator · GENCODE **v50** MANE Select as the coding definition · bootstrap seed 20260926 · ClinVar = latest weekly release, date recorded at fetch · DMS replicates = the assay-reported score (mean where only replicates exist) · missing AVI score = no record for the exact chrom:pos:ref:alt, or a null/NaN score · population mapping = `config/population_groups.yaml`. | `reports/qc/config_status.md` | open |
+| R-06 | **Proposed analysis settings awaiting confirmation** (the latest smoke run used ClinVar **2026-10-04**; see D-024 and D-051) (all `status: proposed` in `config/analysis.yaml`). | Chromosomes chr1–22 + chrX (no Y/M) · CADD **v1.7** as the comparator · GENCODE **v50** MANE Select as the coding definition · bootstrap seed 20260926 · ClinVar = latest weekly release, date recorded at fetch · DMS replicates = the assay-reported score (mean where only replicates exist) · missing AVI score = no record for the exact chrom:pos:ref:alt, or a null/NaN score · population mapping = `config/population_groups.yaml`. | `reports/qc/config_status.md` | open |
 | R-08 | **DMS score direction and quality review (smoke scope).** 23 BRCA1/TP53 assays need a biologist's decision. Proposals: 14 lower-is-damaging, 3 higher-is-damaging, **2 conflicts**, **4 unknown**. The conflicts are the TP53 assays in p53 wild-type cells under nutlin (`00000068-a-1`, `00001235-a-1`): dominant-negative variants enrich there, while truncating variants cannot act dominant-negatively. So "damaging" needs defining for those assays. | A reviewer follows `reports/review/dms_direction_review.md` and fills `config/dms_curation.tsv`. Stage 6 will not run until every in-scope assay has a decision. | `config/dms_curation.tsv` | **open — review stop** |
 | R-09 | **Review workload at `dms_genes` scope.** 1,033 candidate assays across 527 genes. At 5–10 minutes each, that is about 85–170 hours. | Options for the team: (a) first drop genes that cannot reach ≥20 population-observed variants (this does not depend on direction, so it could run before review); (b) accept proposals where calibration and controls agree (`high` confidence), with a spot-check sample, and review the rest in full; (c) split the review across several people by gene family. | — | open — needs a decision before scaling up |
+| R-10 | **Residue-numbering offsets inferred for 5 of 17 harmonized smoke assays** (D-039): `00000003-a-1` and `-a-2` (+1), `00000059-a-1` (+101), `00001222-a-2` (+1,672), `00001222-b-2` (+1,576). | The reviewer confirms each offset against the assay's construct while doing R-08. | `tables/dms_assay_harmonization.tsv` (`numbering_offset`) | open |
+| R-11 | **What "at least 20 eligible variants after harmonization" counts** (Step 12). | Proposed: distinct missense SNVs with a harmonized measurement (the protocol's wording). Alternative: those also observed in a study population. Stage 9 reports both. | `config/analysis.yaml` → `dms_assays.min_variants_basis` | open |
+| R-12 | **A protein change is placed on every SNV that encodes it** (D-038). The original plan dropped one-to-many mappings. | Keep every SNV: the same amino-acid change has the same measured effect whichever codon change produced it. Confirm with Caroline. | `reports/qc/dms_harmonization_report.md` | open |
+| R-13 | **The pipeline currently runs with `review_gates.dms_review: provisional`** (D-036), so Stages 6, 9 and 11 rest on unreviewed score directions. | Finish R-08, set the gate to `strict`, re-run from Stage 6. The config cannot be frozen before that. | `config/data_sources.yaml` | open |
+| R-14 | **Leakage status of every gene is `overlap_unknown`** (Step 35). Nothing is known about which genes, variants or assays were used to develop AVI or its components. | Ask the Atlas authors; record the answer per gene before the benchmark is called independent. | `tables/proposed_dms_gene_universe.tsv` | open |
 | R-07 | **Items still pending on data.** These are settled by later stages: AVI score field and direction (Stage 8, needs Atlas access), DMS assay list and per-assay direction and quality (Stage 5 review, R-08), and the DMS gene universe (Stage 9, review stop). | — | `config/analysis.yaml` | pending |
 
 ---
@@ -167,7 +172,7 @@ length is checked against GRCh38, and its alphabet is checked to be ACGTN only.
 `##fileDate`. Data is then read from the dated file
 (`clinvar_20260923.vcf.gz`, checked unchanged before and after reading), so a weekly
 replacement cannot corrupt a run. The permanent location is `archive_2.0/<year>/`. The release
-used in the smoke run is **2026-09-23**. It must be written into `config/analysis.yaml →
+used in the first smoke run was **2026-09-23** (later runs: D-051). It must be written into `config/analysis.yaml →
 clinvar.release` when the config is frozen (R-06). ClinVar names chromosomes `1..22, X`; they are
 renamed to `chr1..` on extraction. At smoke scope: 15,315 records, 11,046 of them SNVs.
 
@@ -248,10 +253,133 @@ twice).
 files, 9.9 MB. Downloading all 1,033 candidates at `dms_genes` scope is estimated at about
 **0.25 GB** (3.6 M variants at about 69 bytes each).
 
-**D-035 — Stage 6 gate.** DMS harmonization will refuse to run until every in-scope candidate has
+**D-035 — Stage 6 gate** (extended by D-036). DMS harmonization will refuse to run until every in-scope candidate has
 a `reviewer_decision`, and every included one has a `reviewer_direction`. Scores whose raw
 direction is `lower_is_more_damaging` are reversed there. The original score is always kept
 (Step 13).
+
+### DMS harmonization (Stage 6)
+
+**D-036 — Two review-gate modes** (`review_gates.dms_review` in `config/data_sources.yaml`).
+`strict` is D-035 unchanged. `provisional` was added on 2026-10-12 so that the whole pipeline
+can be run end to end before the biologist review is finished (Arman's request): an unreviewed
+assay is included with the pipeline's proposed direction, and an unreviewed assay whose proposal
+is `conflict` or `unknown` is left out. A reviewer's decision always wins. Every downstream
+report and the package index say PROVISIONAL, and `ancal freeze-config` refuses to run in this
+mode. At smoke scope: 23 assays, none reviewed, 17 included on proposals, 6 left out.
+
+**D-037 — Protein consequences are computed in the pipeline, not taken from AlphaMissense.**
+`src/ancal/consequence.py` translates every MANE Select CDS from the GRCh38 reference and lists
+all three alternative bases at every position: 20,304 coding SNVs for BRCA1 and TP53. This one
+table defines coding, missense, synonymous and nonsense for Stages 6–11. It agrees with
+AlphaMissense's `protein_variant` for all 15,032 shared SNVs, which is a Stage 6 gate (at least
+98%). AlphaMissense is now used only for that cross-check and for the AVI sign check (D-045),
+which narrows D-008 and D-025. GENCODE CDS rows exclude the stop codon, so stop-lost variants
+are not in the table.
+
+**D-038 — A protein change is placed on every SNV that encodes it.** `n_snvs_for_change`
+records how many. The plan said one-to-many mappings would be dropped; that would have removed
+most leucine, serine and arginine changes for no scientific reason (R-12). Changes that need
+two or three base changes cannot occur as one SNV and are counted as
+`not_reachable_by_one_snv` (22,366 measurements at smoke scope). This is expected.
+
+**D-039 — Residue numbering is checked, and shifted when one offset fits.** Many assays
+number residues within the tested construct. If fewer than 95% of an assay's residues equal the
+MANE Select residue as written, the pipeline searches for the single offset at which at least
+95% of at least 20 distinct residues agree. If there is none, the whole assay is rejected
+(`assay_numbering_mismatch`); it is never partly mapped. Without this, 5 of 17 smoke assays
+failed the check; with it, all 17 are harmonized, 5 of them with an offset (R-10).
+
+**D-040 — MaveDB's own mapped coordinates are not used.** The plan put them first. The score
+files carry protein or `c.` notation, and placing those on MANE Select with a reference check
+(D-039) is simpler to verify than MaveDB's VRS objects. Assays that report single coding SNVs in
+`c.` notation whose reference bases match MANE Select are mapped at nucleotide level
+(`hgvs_nt_cds`); none of the smoke assays qualifies. See L-08.
+
+**D-041 — Duplicates, direction and percentile.** Several measurements of one change are
+averaged and counted (`n_measurements`); the score is the assay-reported `score` column (R-06).
+`dms_score_harmonized` is the score, negated when the raw direction is `lower_is_more_damaging`;
+`dms_score_original` is kept. `dms_percentile` is the rank among the assay's missense changes
+divided by their number, so only missense changes have one. Smoke result: 36,681 (SNV, assay)
+measurements on 6,518 SNVs, 5,405 of them missense.
+
+### Population variants (Stage 7)
+
+**D-042 — Per-population counts come from genotypes, in the stream.** For each chunk of 20
+intervals: raw records to a temporary file, then `bcftools view -S` (post-QC samples),
+`annotate -x INFO,^FORMAT/GT`, `norm -m -any -f GRCh38 -c w`, `+fill-tags -S` (AN, AC, het, hom,
+hemi, NS for every level), `view -G`. Only site-level counts are stored. There are 176 levels:
+overall, 7 groups and 80 populations, for the unrelated set (3,400, primary) and the
+all-eligible set (4,094, sensitivity). After splitting a multiallelic site, the other alternate
+alleles count as non-alternate (bcftools default), so AN stays the full allele number. Chunks
+are retried and resumable.
+
+**D-043 — Remote gnomAD files are read with our own HTTP range reader**
+(`src/ancal/sources/remote_vcf.py`). htslib's remote reads of the gnomAD bucket were reset
+part-way through a region every time ("Error in the HTTP2 framing layer"), with bcftools and
+with tabix. The reader looks up file offsets in the local `.tbi`, downloads BGZF blocks with
+short retried range requests and stops at the first record past the region. For three TP53
+intervals it returns the same 8 records as tabix. Local files are read with tabix.
+
+**D-044 — QC and frequency definitions.** A variant is excluded at site level when its REF
+differs from GRCh38, duplicate records disagree, the allele is `*` or symbolic, or FILTER is not
+PASS; at population level when the allele number is 0. Observed = alternate allele count of at
+least 1 after QC. Callable = allele number above 0 (L-03). Global allele frequency (Step 16) =
+the unrelated set of the combined resource. All variant types stay in the master table;
+`primary_snv` marks PASS SNVs inside the scope regions. Smoke result: 250 variants (243 SNVs,
+7 indels), no multiallelic splits, no REF mismatches, 234 primary SNVs, 233 of them observed;
+158 observed missense, 73 synonymous, 2 nonsense.
+
+### AVI, gene universe, ClinVar and packaging (Stages 8–11)
+
+**D-045 — The AVI stage is written against a configurable source, not a known file** (L-02).
+`src/ancal/sources/avi.py` reads Parquet, TSV/CSV or VCF, with column names set in the config.
+Join classes follow Step 10: exact; corrected representation (`chr` prefix or letter case);
+allele-swapped; multiple distinct scores for one variant; no score; unresolved conflict (the
+variant's REF, or AVI's REF at an SNV position, differs from GRCh38). Only the first two give a
+valid score. Coverage = eligible observed variants with a valid score / all eligible observed
+variants, where eligible = primary SNV. The direction check uses the sign of the correlation
+with AlphaMissense and nonsense versus synonymous medians; it is not a performance result.
+**It has been exercised only on a synthetic file** built from AlphaMissense (131 of 234 primary
+SNVs matched, all as corrected representation, as constructed); that file and its outputs were
+discarded. Stage 8 is `blocked` in the repository.
+
+**D-046 — Gene-universe proposal.** A gene is proposed when it has an included, harmonized
+assay and at least 20 eligible variants (basis: R-11). Out-of-scope genes are `not_assessed`.
+Every gene's leakage status is `overlap_unknown` (R-14). Nothing is written to
+`config/analysis.yaml`: approval and the freeze are a human step. Smoke result: BRCA1 and TP53
+both proposed, on unreviewed assays.
+
+**D-047 — ClinVar eligibility.** The first applicable reason excludes a record: not an SNV;
+REF differs from GRCh38; not missense in MANE Select; VUS; conflicting; other or no
+classification; no valid AVI score. While Stage 8 is blocked the last step is skipped and
+survivors are `eligible_pending_avi`. Stage 10 uses the release Stage 4 fetched in the same
+run. Smoke result (release 2026-10-04): 15,317 records, 11,046 SNVs, 7,775 missense, 1,084 P/LP
+or B/LB. The pipeline's missense call agrees with ClinVar's own consequence for 10,986 of 11,046
+coding SNV records.
+
+**D-051 — The ClinVar release moved from 2026-09-23 to 2026-10-04.** `clinvar.release` is
+`latest`, so the full re-run on 2026-10-12 resolved the newer weekly file (D-024). Counts in the
+Stage 4 and Stage 10 reports changed slightly (15,315 to 15,317 records in scope). This will
+happen on every full re-run until the release is pinned in `config/data_sources.yaml`
+(`release: "YYYYMMDD"`), which should be done when the config is frozen (R-06).
+
+**D-048 — Attrition and forecast.** `tables/variant_attrition.tsv` counts, per level, the
+variants surviving each step to the Step 15 evaluable set, and each lost variant gets the first
+step it fails. Without AVI the evaluable count is an upper bound and is labelled so. Only the
+two count criteria of Step 18 are forecast; the Spearman and confidence-interval criteria are
+marked "not evaluable before the config freeze". Smoke result: 53 evaluable variants overall
+(upper bound), at most 16 in any group, 2 genes; no group meets 200 variants and 5 genes, as
+expected for two genes.
+
+**D-049 — Local files are accepted wherever a URL is.** Added on 2026-10-12 for running on a
+server that already holds the data: a local ClinVar VCF is used directly, a single indexed
+genome FASTA can replace per-chromosome files, and the related-samples table can be a local
+directory. See `SCALING_UP.md` section 0.
+
+**D-050 — `make d1` runs everything.** A `blocked` stage exits 0, so later stages run and report
+what they can. Stages 6–11 declare only their status file to Snakemake, because a blocked
+stage writes nothing else.
 
 ---
 
@@ -266,3 +394,10 @@ direction is `lower_is_more_damaging` are reversed there. The original score is 
 | L-05 | **Per-dataset licences of MaveDB score sets vary.** Of 1,201: 1,170 CC0, 14 CC BY 4.0, 11 CC BY-SA 4.0 and **6 CC BY-NC-SA 4.0**. | The NC-SA sets may not be usable commercially or redistributable. | Each licence is recorded in the inventory; NC sets are flagged `licence_CC_BY-NC-SA_4.0` on review cards. |
 | L-06 | **Hail Table decoder covers one layout only** (D-016). | A future re-release in a different format would stop Stage 3. | The decoder fails loudly; the fallback is to read the table with Hail. |
 | L-07 | **AlphaMissense is licensed CC BY-NC-SA 4.0 (non-commercial, share-alike).** | This may restrict commercial use of anything derived from the protein-to-genome lookup. AVI itself includes AlphaMissense, so the AVI licence needs checking too (L-02). | Confirm the licence position with the team, alongside CADD (L-04). |
+| L-08 | **DMS variants are placed by protein change** (D-040), not from MaveDB's mapped coordinates. | An effect specific to one codon change (splicing, for example) is not represented; assays reporting only nucleotide changes on a non-MANE construct are not harmonized. | Nucleotide-level mapping is used when an assay's `c.` positions match MANE Select. Revisit if such assays matter at `dms_genes` scope. |
+| L-09 | **The ClinVar VCF has no per-submitter records.** | "Submission information" (Step 29) is limited to review status, conflict detail, origin and condition. | Add ClinVar's `submission_summary.txt.gz` if submitter-level detail is needed. |
+| L-10 | **The AVI loader has not seen a real AVI file** (D-045). | Column names, multiplicity per variant or transcript handling may need adjusting once the file is available. | The stage reports `blocked` with the file's columns when it cannot read it. |
+| L-11 | **No leakage information for AVI** (R-14). | No evaluation subset can be called confirmed independent (Step 35). | Recorded per gene as `overlap_unknown`. |
+| L-12 | **Stages 6, 7 and 11 are untested above `smoke` scope.** | Memory and runtime at `dms_genes` and `exome` scope are estimates. | Stage 7 is chunked and resumable; see `SCALING_UP.md` section 4. |
+| L-13 | **Package versions are not pinned** in `environment.yml` beyond bcftools, htslib and samtools. | A new environment can get newer libraries (the server got polars 2.0.0; this Mac has 1.44.2). | Versions are recorded in `reports/manifests/software_manifest.tsv`; pin them before the final run. |
+

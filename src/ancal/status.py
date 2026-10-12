@@ -80,4 +80,5 @@ def read(settings: Settings, stage: str) -> dict | None:
 
 def read_all(settings: Settings) -> list[dict]:
     d = settings.root / "reports" / "status"
-    return [json.loads(p.read_text()) for p in sorted(d.glob("stage*.json"))]
+    paths = sorted(d.glob("stage*.json"), key=lambda p: int(p.stem.removeprefix("stage")))
+    return [json.loads(p.read_text()) for p in paths]
