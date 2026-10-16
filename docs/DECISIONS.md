@@ -201,7 +201,9 @@ metadata), so the one made during the smoke run is reused. If it is missing, Sta
 CSV are saved under `data_store/dms/mavedb/` and recorded in the manifest. Re-runs reuse the
 snapshot, so the inventory does not change silently as MaveDB grows; `ancal stage5 --refresh`
 takes a new one. Snapshots are gzip-written with a fixed timestamp, so identical content gives
-identical checksums.
+identical checksums. *Update 2026-10-16:* the snapshot lives in the git-ignored `data_store/`, so
+the first run on a new machine takes a new one without `--refresh` (L-14). The server run took
+1,205 sets (API 2026.2.7.4); see D-060.
 
 **D-030 — Each score set is resolved to one MANE Select gene**, in this order: MaveDB's own
 GRCh38 mapping (527), an Ensembl gene ID (42), UniProt accession to primary gene name (434,
@@ -342,7 +344,8 @@ variants, where eligible = primary SNV. The direction check uses the sign of the
 with AlphaMissense and nonsense versus synonymous medians; it is not a performance result.
 **It has been exercised only on a synthetic file** built from AlphaMissense (131 of 234 primary
 SNVs matched, all as corrected representation, as constructed); that file and its outputs were
-discarded. Stage 8 is `blocked` in the repository.
+discarded. Stage 8 is `blocked` in the repository. *Update 2026-10-16:* first run on the real
+AVI file passed (D-056, D-060).
 
 **D-046 — Gene-universe proposal.** A gene is proposed when it has an included, harmonized
 assay and at least 20 eligible variants (basis: R-11). Out-of-scope genes are `not_assessed`.
@@ -446,6 +449,64 @@ The ACGTN check is kept unchanged. None of the 12 positions is in a smoke-scope 
 BRCA1), and an `N` cannot match a variant REF allele, so no scored variant is affected. Other
 contigs will be converted the same way when they come into scope.
 
+**D-058 — The consequence table in the DMS harmonization report has a fixed column order.** In
+the 2026-10-16 run the per-gene consequence columns came out as `synonymous, start_lost,
+missense, nonsense` instead of `missense, start_lost, synonymous, nonsense`. The counts were the
+same. The table is built with a polars `group_by` (row order not guaranteed) and then a
+`pivot` (columns in order of first appearance), so identical inputs could give different
+reports. `stages/dms_harmonize.py` now sorts by gene and consequence before the pivot, which
+gives alphabetical columns. This was the only `pivot` in the code base.
+
+**D-059 — `make` re-runs failed stages.** A failed stage writes its status file. The Makefile
+runs Snakemake with `--keep-incomplete`, so that file is kept for `ancal status`, and the next
+`make d1` treated the stage as done. On 2026-10-16 this skipped the failed Stage 4 and started
+Stage 5 against a missing reference; the run was stopped and restarted with
+`--forcerun stage4`. The Makefile now finds every status file with `"status": "fail"` and passes
+those stages to `--forcerun`, which also re-runs everything after them. `--forcerun` is placed
+first, because it takes a list and would otherwise swallow the target name. Two alternatives were
+tried and rejected. Dating the file to 1970 did not work: Snakemake 8.30 ignored the older
+mtime. Moving the file aside did not work either: Snakemake does not re-run an upstream job when
+the downstream outputs are present. The fix was tested with dry runs, with Stage 4 marked
+failed and with every stage passing. A `blocked` stage is not forced; it is released by
+changing its config inputs.
+
+**D-060 — Full run on the server, 2026-10-16** (smoke scope, commit `bb75bf0` and later). Every
+stage passes after D-057. The logs have no Python, htslib or Snakemake warnings, and
+`bcftools norm` processed 250 records with none split, realigned or removed. The existing
+review stops still stand: Stage 3 (unrelated count 3,400 vs `post_qc_summary` 3,376), Stage 5
+(0/23 assays reviewed), Stage 6 (PROVISIONAL) and Stage 9 (needs team approval).
+
+Errors and fixes during the run:
+1. `make` could not find `conda` (`Error 127`) in a non-login shell. The fix is to put
+   `/home/ubuntu/miniforge3/bin` on `PATH`; this is an environment issue, not a code issue.
+2. Stage 4 failed the alphabet check on the Broad reference (fixed in D-057).
+3. The following `make d1` skipped the failed stage (fixed in D-059).
+4. The consequence-table column order was not reproducible (fixed in D-058).
+
+Changes from the previous committed run (2026-10-12):
+- **ClinVar 20260928** (was 20261004, D-054): 15,315 records in scope (was 15,317) and 11,045
+  SNVs (was 11,046 at Stage 10). Missense in MANE Select: 7,774 (was 7,775). Eligible P/LP or
+  B/LB: 1,084, all of which have an AVI score.
+- **MaveDB snapshot** re-taken on this server (L-14): 1,205 human score sets (was 1,201), 1,037
+  candidates (was 1,033) and 528 genes (was 527). The new sets are four AGXT assays
+  (`urn:mavedb:00001301-a-1` to `-a-4`). They were appended to `config/dms_curation.tsv` as
+  candidates outside smoke scope; existing reviewer rows are unchanged. Smoke scope still has
+  23 assays.
+- **AVI (Stage 8, first real run):**
+  - Source and records: tabix region query; 20,304 in-scope records, with REF matching GRCh38
+    for all of them. No null scores and no duplicates. Raw score range in scope: -0.973 to
+    3.238.
+  - Direction: confirmed. Spearman with AlphaMissense is 0.705, and median raw scores are
+    nonsense 1.905, start_lost 1.502, missense 0.352 and synonymous 0.115.
+  - Join: 243 exact matches (234 of them primary SNVs) and 7 `no_avi_score`. None of those 7 is
+    a primary SNV; AVI covers SNVs only.
+  - Coverage: 233/233 eligible observed variants (100%) in every group, frequency bin and
+    population.
+- **Downstream:** the evaluable set is 53 variants, now an actual count rather than an upper
+  bound, with at most 16 in any group (D-048). In Stage 9, all of the population-observed harmonized
+  missense SNVs have a valid AVI score: 25 of 25 for BRCA1 and 28 of 28 for TP53. The "AVI not available" PROVISIONAL notes are gone from the
+  Stage 9 to 11 reports.
+
 **D-053 — Reference FASTA is the Broad GRCh38 genome** (`Homo_sapiens_assembly38.fasta` from
 `gs://gcp-public-data--broad-references/hg38/v0`, with `.fai`), replacing UCSC per-chromosome
 files (supersedes D-007). It is a single faidx-indexed file, so Stage 4 extracts each in-scope
@@ -492,8 +553,9 @@ dense per-chromosome VCFs (+ `.tbi`) should be obtained. Point `uri` at them, ke
 | L-07 | **AlphaMissense is licensed CC BY-NC-SA 4.0 (non-commercial, share-alike).** | This may restrict commercial use of anything derived from the protein-to-genome lookup. AVI itself includes AlphaMissense, so the AVI licence needs checking too (L-02). | Confirm the licence position with the team, alongside CADD (L-04). |
 | L-08 | **DMS variants are placed by protein change** (D-040), not from MaveDB's mapped coordinates. | An effect specific to one codon change (splicing, for example) is not represented; assays reporting only nucleotide changes on a non-MANE construct are not harmonized. | Nucleotide-level mapping is used when an assay's `c.` positions match MANE Select. Revisit if such assays matter at `dms_genes` scope. |
 | L-09 | **The ClinVar VCF has no per-submitter records.** | "Submission information" (Step 29) is limited to review status, conflict detail, origin and condition. | Add ClinVar's `submission_summary.txt.gz` if submitter-level detail is needed. |
-| L-10 | **The AVI loader has only checked the real file's columns** (D-045, D-056). | Column resolution and the tabix index were checked on 2026-10-16. The full join (multiplicity per variant, REF agreement) has not run on the real file yet. | Stage 8 reports `blocked` with the file's columns when it cannot read it. |
+| L-10 | ~~The AVI loader has not seen a real AVI file.~~ **Resolved 2026-10-16** (D-060): Stage 8 ran on the real file at smoke scope. The REF matched GRCh38 for all 20,304 records; there were no duplicate or null records and no transcript-specific rows. | Not yet run above smoke scope (L-12). | — |
 | L-11 | **No leakage information for AVI** (R-14). | No evaluation subset can be called confirmed independent (Step 35). | Recorded per gene as `overlap_unknown`. |
 | L-12 | **Stages 6, 7 and 11 are untested above `smoke` scope.** | Memory and runtime at `dms_genes` and `exome` scope are estimates. | Stage 7 is chunked and resumable; see `SCALING_UP.md` section 4. |
+| L-14 | **The MaveDB snapshot is not carried between machines** (D-029). It is kept in the git-ignored `data_store/dms/mavedb/`. | A run on a new machine takes a new snapshot without being asked, so the inventory can change (1,201 → 1,205 sets on 2026-10-16). | Copy `data_store/dms/mavedb/` along with the repository, or accept the change and record it, as in D-060. |
 | L-13 | **Package versions are not pinned** in `environment.yml` beyond bcftools, htslib and samtools. | A new environment can get newer libraries (the server got polars 2.0.0; this Mac has 1.44.2). | Versions are recorded in `reports/manifests/software_manifest.tsv`; pin them before the final run. |
 

@@ -357,7 +357,9 @@ def run(settings: Settings) -> status.StageStatus:
 def write_report(settings, p, scope, mode, unreviewed, assays, excl, dms, cons, skipped, n_am, n_am_ok):
     banner = common.provisional_banner(scope, [f"{len(unreviewed)} assay(s) have no reviewer decision and use the "
                                                "pipeline's proposed direction"] if unreviewed else [])
-    cons_counts = cons.group_by("gene_symbol", "consequence").len().pivot(on="consequence", index="gene_symbol", values="len").sort("gene_symbol")
+    # Sorted before the pivot: group_by order is not stable, and pivot columns follow first appearance (D-058).
+    cons_counts = (cons.group_by("gene_symbol", "consequence").len().sort("gene_symbol", "consequence")
+                   .pivot(on="consequence", index="gene_symbol", values="len").sort("gene_symbol"))
     a = assays.select("score_set_urn", "gene_symbol", "decision", "raw_direction", "direction_source", "mapping_method",
                       "numbering_offset", "n_scored", "ref_match_rate", "n_missense_changes", "n_missense_snvs_mapped", "assay_exclusion_reason")
     by_reason = excl.group_by("reason").agg(pl.col("n_measurements").sum(), pl.col("score_set_urn").n_unique().alias("assays")

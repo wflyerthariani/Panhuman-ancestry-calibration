@@ -2,7 +2,12 @@
 ENV      ?= ancal
 RUN      := conda run --no-capture-output -n $(ENV)
 SCOPE    ?=
-SMK_ARGS := --snakefile workflow/Snakefile --cores 1 --keep-incomplete $(if $(SCOPE),--config scope=$(SCOPE),)
+# A failed stage keeps its status file (for `ancal status`), so Snakemake would treat it as done.
+# Force failed stages, and everything after them, to re-run (D-059).
+FAILED   := $(shell grep -l '"status": "fail"' reports/status/stage*.json 2>/dev/null | xargs -r -n1 basename | sed 's/\.json$$//')
+# --forcerun takes a list, so it goes first: the next flag ends it and the target is not swallowed.
+SMK_ARGS := $(if $(FAILED),--forcerun $(FAILED),) --snakefile workflow/Snakefile --cores 1 --keep-incomplete \
+            $(if $(SCOPE),--config scope=$(SCOPE),)
 
 .PHONY: env check-env test budget status stage0 stage1 stage2 stage3 stage4 stage5 stage6 stage7 stage8 stage9 \
         stage10 stage11 d1 clean-scope freeze-config
