@@ -2,7 +2,7 @@
   "stage": "stage11",
   "status": "pass",
   "scope": "smoke",
-  "disk_used_mb": 53.01,
+  "disk_used_mb": 54.44,
   "checks": [
     {
       "name": "attrition_table",
@@ -17,7 +17,7 @@
     {
       "name": "seven_groups_forecast",
       "ok": true,
-      "detail": "0 of 7 groups expected to meet the count criteria (upper bound; AVI pending)"
+      "detail": "0 of 7 groups expected to meet the count criteria"
     },
     {
       "name": "unresolved_issues",
@@ -32,7 +32,7 @@
     {
       "name": "disk_budget",
       "ok": true,
-      "detail": "53.0 MB of 1.0 GB"
+      "detail": "54.4 MB of 1.0 GB"
     },
     {
       "name": "package_files_present",
@@ -42,5 +42,5 @@
   ],
   "notes": "Attrition table, inferential forecast, unresolved issues and package index (items 13-15).",
   "blocked_reason": "",
-  "written_at": "2026-10-12T16:23:44+00:00"
+  "written_at": "2026-10-16T03:58:59+00:00"
 }

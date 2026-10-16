@@ -1,177 +1,177 @@
 sample_set	level	label	population_group	n_samples	n_alt_allele_count_ge_1	n_observed_after_qc	n_primary_snvs	n_coding	n_missense	n_snvs_with_avi_score	n_snvs_with_dms_measurement	n_snvs_with_avi_and_dms	n_evaluable_ignoring_avi	n_evaluable	n_genes	n_dms_assays
-unrelated	all	ALL	""	3400	246	240	233	233	158		53		53		2	17
-unrelated	group	AFR	AFR	753	86	85	82	82	58		16		16		2	17
-unrelated	group	AMR	AMR	395	62	61	61	61	41		8		8		2	14
-unrelated	group	CSA	CSA	683	67	66	65	65	41		12		12		2	17
-unrelated	group	EAS	EAS	727	53	50	50	50	32		11		11		2	17
-unrelated	group	EUR	EUR	665	50	49	46	46	31		11		11		2	17
-unrelated	group	MID	MID	150	34	34	34	34	23		6		6		2	15
-unrelated	group	OCE	OCE	27	13	12	12	12	9		2		2		2	9
-unrelated	population	ACB	AFR	94	33	33	32	32	21		4		4		2	14
-unrelated	population	ASW	AFR	53	29	29	29	29	21		5		5		2	13
-unrelated	population	BantuKenya	AFR	10	13	13	13	13	9		3		3		2	13
-unrelated	population	BantuSouthAfrica	AFR	8	15	15	14	14	8		2		2		1	10
-unrelated	population	Biaka	AFR	22	25	24	24	24	15		3		3		2	13
-unrelated	population	ESN	AFR	103	24	24	22	22	16		3		3		1	12
-unrelated	population	GWD	AFR	116	26	26	26	26	20		5		5		2	13
-unrelated	population	LWK	AFR	90	28	28	26	26	17		3		3		2	13
-unrelated	population	MSL	AFR	83	26	26	25	25	16		3		3		2	13
-unrelated	population	Mandenka	AFR	20	10	10	10	10	7		1		1		1	8
-unrelated	population	Mbuti	AFR	10	9	9	9	9	8		1		1		1	8
-unrelated	population	San	AFR	6	8	8	7	7	5		1		1		1	10
-unrelated	population	YRI	AFR	117	30	30	29	29	17		6		6		2	14
-unrelated	population	Yoruba	AFR	21	15	15	15	15	9		3		3		2	11
-unrelated	population	CLM	AMR	95	33	33	33	33	20		3		3		2	11
-unrelated	population	Colombian	AMR	6	8	8	8	8	5		1		1		1	8
-unrelated	population	Karitiana	AMR	7	8	8	8	8	5		1		1		1	8
-unrelated	population	MXL	AMR	63	19	19	19	19	12		2		2		1	11
-unrelated	population	Maya	AMR	21	17	17	17	17	10		3		3		1	12
-unrelated	population	PEL	AMR	85	17	16	16	16	10		2		2		2	9
-unrelated	population	PUR	AMR	104	26	26	26	26	19		2		2		2	9
-unrelated	population	Pima	AMR	10	10	10	10	10	6		1		1		1	8
-unrelated	population	Surui	AMR	4	8	8	8	8	5		1		1		1	8
-unrelated	population	BEB	CSA	99	19	19	19	19	11		3		3		2	10
-unrelated	population	Balochi	CSA	23	14	14	13	13	9		3		3		2	11
-unrelated	population	Brahui	CSA	23	13	13	13	13	8		2		2		2	9
-unrelated	population	Burusho	CSA	24	11	11	11	11	8		2		2		2	9
-unrelated	population	GIH	CSA	100	24	24	24	24	14		4		4		2	12
-unrelated	population	Hazara	CSA	18	13	12	12	12	8		2		2		2	9
-unrelated	population	ITU	CSA	102	24	24	24	24	15		5		5		2	13
-unrelated	population	Kalash	CSA	21	9	9	9	9	6		1		1		1	8
-unrelated	population	Makrani	CSA	23	13	13	13	13	8		2		2		2	10
-unrelated	population	PJL	CSA	102	24	24	24	24	16		4		4		2	12
-unrelated	population	Pathan	CSA	24	13	13	13	13	8		2		2		2	9
-unrelated	population	STU	CSA	101	26	26	26	26	17		4		4		2	13
-unrelated	population	Sindhi	CSA	23	12	12	12	12	9		3		3		2	11
-unrelated	population	CDX	EAS	90	19	19	19	19	12		3		3		2	13
-unrelated	population	CHB	EAS	103	19	19	19	19	12		3		3		2	13
-unrelated	population	CHS	EAS	103	16	16	16	16	10		2		2		2	11
-unrelated	population	Cambodian	EAS	10	8	8	8	8	5		1		1		1	8
-unrelated	population	Dai	EAS	8	8	8	8	8	5		1		1		1	8
-unrelated	population	Daur	EAS	9	8	8	8	8	5		1		1		1	8
-unrelated	population	Han	EAS	33	12	11	11	11	7		3		3		2	11
-unrelated	population	Hezhen	EAS	8	8	8	8	8	5		1		1		1	8
-unrelated	population	JPT	EAS	102	17	17	17	17	11		5		5		2	12
-unrelated	population	Japanese	EAS	28	12	12	12	12	7		2		2		1	10
-unrelated	population	KHV	EAS	101	19	19	19	19	12		4		4		2	14
-unrelated	population	Lahu	EAS	8	12	11	11	11	7		2		2		2	11
-unrelated	population	Miao	EAS	10	9	9	9	9	5		1		1		1	8
-unrelated	population	Mongolian	EAS	10	12	12	12	12	8		2		2		1	10
-unrelated	population	Naxi	EAS	7	10	10	10	10	7		2		2		1	12
-unrelated	population	NorthernHan	EAS	10	8	8	8	8	5		1		1		1	8
-unrelated	population	Oroqen	EAS	8	15	15	15	15	11		1		1		1	8
-unrelated	population	She	EAS	9	12	10	10	10	6		2		2		2	10
-unrelated	population	Tu	EAS	10	11	11	11	11	7		1		1		1	8
-unrelated	population	Tujia	EAS	10	10	10	10	10	6		1		1		1	8
-unrelated	population	Uygur	EAS	6	10	10	10	10	6		1		1		1	8
-unrelated	population	Xibo	EAS	9	12	12	12	12	6		1		1		1	8
-unrelated	population	Yakut	EAS	25	10	10	10	10	6		1		1		1	8
-unrelated	population	Yi	EAS	10	11	11	11	11	7		1		1		1	8
-unrelated	population	Adygei	EUR	17	15	15	15	15	10		3		3		2	13
-unrelated	population	Basque	EUR	22	16	15	15	15	10		1		1		1	8
-unrelated	population	BergamoItalian	EUR	11	12	12	12	12	9		1		1		1	8
-unrelated	population	CEU	EUR	121	25	25	24	24	16		4		4		2	13
-unrelated	population	FIN	EUR	98	16	16	16	16	12		3		3		2	10
-unrelated	population	French	EUR	27	17	17	17	17	11		2		2		2	9
-unrelated	population	GBR	EUR	88	16	16	16	16	10		3		3		2	11
-unrelated	population	IBS	EUR	104	21	21	21	21	14		3		3		2	11
-unrelated	population	Orcadian	EUR	14	10	10	10	10	7		1		1		1	8
-unrelated	population	Russian	EUR	25	14	14	14	14	10		2		2		2	9
-unrelated	population	Sardinian	EUR	27	14	14	14	14	8		1		1		1	8
-unrelated	population	TSI	EUR	103	25	25	24	24	15		5		5		2	14
-unrelated	population	Tuscan	EUR	8	12	12	11	11	7		1		1		1	8
-unrelated	population	Bedouin	MID	45	22	22	22	22	16		4		4		2	13
-unrelated	population	Druze	MID	40	17	17	17	17	10		3		3		2	12
-unrelated	population	Mozabite	MID	25	17	17	17	17	10		1		1		1	8
-unrelated	population	Palestinian	MID	40	20	20	20	20	14		3		3		2	10
-unrelated	population	Bougainville	OCE	10	11	10	10	10	7		1		1		1	8
-unrelated	population	PapuanHighlands	OCE	9	10	10	10	10	7		2		2		2	9
-unrelated	population	PapuanSepik	OCE	8	8	8	8	8	5		1		1		1	8
-all_eligible	all	ALL	""	4094	247	241	234	234	159		53		53		2	17
-all_eligible	group	AFR	AFR	989	89	88	85	85	61		16		16		2	17
-all_eligible	group	AMR	AMR	549	62	61	61	61	41		8		8		2	14
-all_eligible	group	CSA	CSA	782	69	68	67	67	42		12		12		2	17
-all_eligible	group	EAS	EAS	816	53	50	50	50	32		11		11		2	17
-all_eligible	group	EUR	EUR	770	50	49	46	46	31		11		11		2	17
-all_eligible	group	MID	MID	158	34	34	34	34	23		6		6		2	15
-all_eligible	group	OCE	OCE	30	13	12	12	12	9		2		2		2	9
-all_eligible	population	ACB	AFR	114	33	33	32	32	21		4		4		2	14
-all_eligible	population	ASW	AFR	71	31	31	31	31	22		5		5		2	13
-all_eligible	population	BantuKenya	AFR	12	15	15	15	15	10		3		3		2	13
-all_eligible	population	BantuSouthAfrica	AFR	8	15	15	14	14	8		2		2		1	10
-all_eligible	population	Biaka	AFR	26	25	24	24	24	15		3		3		2	13
-all_eligible	population	ESN	AFR	148	25	25	23	23	17		3		3		1	12
-all_eligible	population	GWD	AFR	176	27	27	27	27	21		5		5		2	13
-all_eligible	population	LWK	AFR	97	29	29	27	27	18		3		3		2	13
-all_eligible	population	MSL	AFR	98	26	26	25	25	16		3		3		2	13
-all_eligible	population	Mandenka	AFR	23	10	10	10	10	7		1		1		1	8
-all_eligible	population	Mbuti	AFR	14	12	12	12	12	9		1		1		1	8
-all_eligible	population	San	AFR	6	8	8	7	7	5		1		1		1	10
-all_eligible	population	YRI	AFR	175	31	31	30	30	18		6		6		2	14
-all_eligible	population	Yoruba	AFR	21	15	15	15	15	9		3		3		2	11
-all_eligible	population	CLM	AMR	130	33	33	33	33	20		3		3		2	11
-all_eligible	population	Colombian	AMR	7	8	8	8	8	5		1		1		1	8
-all_eligible	population	Karitiana	AMR	12	8	8	8	8	5		1		1		1	8
-all_eligible	population	MXL	AMR	97	19	19	19	19	12		2		2		1	11
-all_eligible	population	Maya	AMR	21	17	17	17	17	10		3		3		1	12
-all_eligible	population	PEL	AMR	122	17	16	16	16	10		2		2		2	9
-all_eligible	population	PUR	AMR	138	26	26	26	26	19		2		2		2	9
-all_eligible	population	Pima	AMR	14	10	10	10	10	6		1		1		1	8
-all_eligible	population	Surui	AMR	8	8	8	8	8	5		1		1		1	8
-all_eligible	population	BEB	CSA	131	19	19	19	19	11		3		3		2	10
-all_eligible	population	Balochi	CSA	23	14	14	13	13	9		3		3		2	11
-all_eligible	population	Brahui	CSA	23	13	13	13	13	8		2		2		2	9
-all_eligible	population	Burusho	CSA	24	11	11	11	11	8		2		2		2	9
-all_eligible	population	GIH	CSA	103	24	24	24	24	14		4		4		2	12
-all_eligible	population	Hazara	CSA	20	15	14	14	14	9		2		2		2	9
-all_eligible	population	ITU	CSA	106	24	24	24	24	15		5		5		2	13
-all_eligible	population	Kalash	CSA	23	11	11	11	11	8		1		1		1	8
-all_eligible	population	Makrani	CSA	23	13	13	13	13	8		2		2		2	10
-all_eligible	population	PJL	CSA	145	24	24	24	24	16		4		4		2	12
-all_eligible	population	Pathan	CSA	24	13	13	13	13	8		2		2		2	9
-all_eligible	population	STU	CSA	114	26	26	26	26	17		4		4		2	13
-all_eligible	population	Sindhi	CSA	23	12	12	12	12	9		3		3		2	11
-all_eligible	population	CDX	EAS	93	19	19	19	19	12		3		3		2	13
-all_eligible	population	CHB	EAS	103	19	19	19	19	12		3		3		2	13
-all_eligible	population	CHS	EAS	163	16	16	16	16	10		2		2		2	11
-all_eligible	population	Cambodian	EAS	10	8	8	8	8	5		1		1		1	8
-all_eligible	population	Dai	EAS	9	8	8	8	8	5		1		1		1	8
-all_eligible	population	Daur	EAS	9	8	8	8	8	5		1		1		1	8
-all_eligible	population	Han	EAS	33	12	11	11	11	7		3		3		2	11
-all_eligible	population	Hezhen	EAS	9	8	8	8	8	5		1		1		1	8
-all_eligible	population	JPT	EAS	102	17	17	17	17	11		5		5		2	12
-all_eligible	population	Japanese	EAS	29	12	12	12	12	7		2		2		1	10
-all_eligible	population	KHV	EAS	122	19	19	19	19	12		4		4		2	14
-all_eligible	population	Lahu	EAS	8	12	11	11	11	7		2		2		2	11
-all_eligible	population	Miao	EAS	10	9	9	9	9	5		1		1		1	8
-all_eligible	population	Mongolian	EAS	10	12	12	12	12	8		2		2		1	10
-all_eligible	population	Naxi	EAS	8	10	10	10	10	7		2		2		1	12
-all_eligible	population	NorthernHan	EAS	10	8	8	8	8	5		1		1		1	8
-all_eligible	population	Oroqen	EAS	8	15	15	15	15	11		1		1		1	8
-all_eligible	population	She	EAS	10	12	10	10	10	6		2		2		2	10
-all_eligible	population	Tu	EAS	10	11	11	11	11	7		1		1		1	8
-all_eligible	population	Tujia	EAS	10	10	10	10	10	6		1		1		1	8
-all_eligible	population	Uygur	EAS	6	10	10	10	10	6		1		1		1	8
-all_eligible	population	Xibo	EAS	9	12	12	12	12	6		1		1		1	8
-all_eligible	population	Yakut	EAS	25	10	10	10	10	6		1		1		1	8
-all_eligible	population	Yi	EAS	10	11	11	11	11	7		1		1		1	8
-all_eligible	population	Adygei	EUR	17	15	15	15	15	10		3		3		2	13
-all_eligible	population	Basque	EUR	22	16	15	15	15	10		1		1		1	8
-all_eligible	population	BergamoItalian	EUR	11	12	12	12	12	9		1		1		1	8
-all_eligible	population	CEU	EUR	176	25	25	24	24	16		4		4		2	13
-all_eligible	population	FIN	EUR	98	16	16	16	16	12		3		3		2	10
-all_eligible	population	French	EUR	27	17	17	17	17	11		2		2		2	9
-all_eligible	population	GBR	EUR	90	16	16	16	16	10		3		3		2	11
-all_eligible	population	IBS	EUR	151	21	21	21	21	14		3		3		2	11
-all_eligible	population	Orcadian	EUR	15	10	10	10	10	7		1		1		1	8
-all_eligible	population	Russian	EUR	25	14	14	14	14	10		2		2		2	9
-all_eligible	population	Sardinian	EUR	27	14	14	14	14	8		1		1		1	8
-all_eligible	population	TSI	EUR	103	25	25	24	24	15		5		5		2	14
-all_eligible	population	Tuscan	EUR	8	12	12	11	11	7		1		1		1	8
-all_eligible	population	Bedouin	MID	45	22	22	22	22	16		4		4		2	13
-all_eligible	population	Druze	MID	42	17	17	17	17	10		3		3		2	12
-all_eligible	population	Mozabite	MID	26	17	17	17	17	10		1		1		1	8
-all_eligible	population	Palestinian	MID	45	20	20	20	20	14		3		3		2	10
-all_eligible	population	Bougainville	OCE	13	11	10	10	10	7		1		1		1	8
-all_eligible	population	PapuanHighlands	OCE	9	10	10	10	10	7		2		2		2	9
-all_eligible	population	PapuanSepik	OCE	8	8	8	8	8	5		1		1		1	8
+unrelated	all	ALL	""	3400	246	240	233	233	158	233	53	53	53	53	2	17
+unrelated	group	AFR	AFR	753	86	85	82	82	58	82	16	16	16	16	2	17
+unrelated	group	AMR	AMR	395	62	61	61	61	41	61	8	8	8	8	2	14
+unrelated	group	CSA	CSA	683	67	66	65	65	41	65	12	12	12	12	2	17
+unrelated	group	EAS	EAS	727	53	50	50	50	32	50	11	11	11	11	2	17
+unrelated	group	EUR	EUR	665	50	49	46	46	31	46	11	11	11	11	2	17
+unrelated	group	MID	MID	150	34	34	34	34	23	34	6	6	6	6	2	15
+unrelated	group	OCE	OCE	27	13	12	12	12	9	12	2	2	2	2	2	9
+unrelated	population	ACB	AFR	94	33	33	32	32	21	32	4	4	4	4	2	14
+unrelated	population	ASW	AFR	53	29	29	29	29	21	29	5	5	5	5	2	13
+unrelated	population	BantuKenya	AFR	10	13	13	13	13	9	13	3	3	3	3	2	13
+unrelated	population	BantuSouthAfrica	AFR	8	15	15	14	14	8	14	2	2	2	2	1	10
+unrelated	population	Biaka	AFR	22	25	24	24	24	15	24	3	3	3	3	2	13
+unrelated	population	ESN	AFR	103	24	24	22	22	16	22	3	3	3	3	1	12
+unrelated	population	GWD	AFR	116	26	26	26	26	20	26	5	5	5	5	2	13
+unrelated	population	LWK	AFR	90	28	28	26	26	17	26	3	3	3	3	2	13
+unrelated	population	MSL	AFR	83	26	26	25	25	16	25	3	3	3	3	2	13
+unrelated	population	Mandenka	AFR	20	10	10	10	10	7	10	1	1	1	1	1	8
+unrelated	population	Mbuti	AFR	10	9	9	9	9	8	9	1	1	1	1	1	8
+unrelated	population	San	AFR	6	8	8	7	7	5	7	1	1	1	1	1	10
+unrelated	population	YRI	AFR	117	30	30	29	29	17	29	6	6	6	6	2	14
+unrelated	population	Yoruba	AFR	21	15	15	15	15	9	15	3	3	3	3	2	11
+unrelated	population	CLM	AMR	95	33	33	33	33	20	33	3	3	3	3	2	11
+unrelated	population	Colombian	AMR	6	8	8	8	8	5	8	1	1	1	1	1	8
+unrelated	population	Karitiana	AMR	7	8	8	8	8	5	8	1	1	1	1	1	8
+unrelated	population	MXL	AMR	63	19	19	19	19	12	19	2	2	2	2	1	11
+unrelated	population	Maya	AMR	21	17	17	17	17	10	17	3	3	3	3	1	12
+unrelated	population	PEL	AMR	85	17	16	16	16	10	16	2	2	2	2	2	9
+unrelated	population	PUR	AMR	104	26	26	26	26	19	26	2	2	2	2	2	9
+unrelated	population	Pima	AMR	10	10	10	10	10	6	10	1	1	1	1	1	8
+unrelated	population	Surui	AMR	4	8	8	8	8	5	8	1	1	1	1	1	8
+unrelated	population	BEB	CSA	99	19	19	19	19	11	19	3	3	3	3	2	10
+unrelated	population	Balochi	CSA	23	14	14	13	13	9	13	3	3	3	3	2	11
+unrelated	population	Brahui	CSA	23	13	13	13	13	8	13	2	2	2	2	2	9
+unrelated	population	Burusho	CSA	24	11	11	11	11	8	11	2	2	2	2	2	9
+unrelated	population	GIH	CSA	100	24	24	24	24	14	24	4	4	4	4	2	12
+unrelated	population	Hazara	CSA	18	13	12	12	12	8	12	2	2	2	2	2	9
+unrelated	population	ITU	CSA	102	24	24	24	24	15	24	5	5	5	5	2	13
+unrelated	population	Kalash	CSA	21	9	9	9	9	6	9	1	1	1	1	1	8
+unrelated	population	Makrani	CSA	23	13	13	13	13	8	13	2	2	2	2	2	10
+unrelated	population	PJL	CSA	102	24	24	24	24	16	24	4	4	4	4	2	12
+unrelated	population	Pathan	CSA	24	13	13	13	13	8	13	2	2	2	2	2	9
+unrelated	population	STU	CSA	101	26	26	26	26	17	26	4	4	4	4	2	13
+unrelated	population	Sindhi	CSA	23	12	12	12	12	9	12	3	3	3	3	2	11
+unrelated	population	CDX	EAS	90	19	19	19	19	12	19	3	3	3	3	2	13
+unrelated	population	CHB	EAS	103	19	19	19	19	12	19	3	3	3	3	2	13
+unrelated	population	CHS	EAS	103	16	16	16	16	10	16	2	2	2	2	2	11
+unrelated	population	Cambodian	EAS	10	8	8	8	8	5	8	1	1	1	1	1	8
+unrelated	population	Dai	EAS	8	8	8	8	8	5	8	1	1	1	1	1	8
+unrelated	population	Daur	EAS	9	8	8	8	8	5	8	1	1	1	1	1	8
+unrelated	population	Han	EAS	33	12	11	11	11	7	11	3	3	3	3	2	11
+unrelated	population	Hezhen	EAS	8	8	8	8	8	5	8	1	1	1	1	1	8
+unrelated	population	JPT	EAS	102	17	17	17	17	11	17	5	5	5	5	2	12
+unrelated	population	Japanese	EAS	28	12	12	12	12	7	12	2	2	2	2	1	10
+unrelated	population	KHV	EAS	101	19	19	19	19	12	19	4	4	4	4	2	14
+unrelated	population	Lahu	EAS	8	12	11	11	11	7	11	2	2	2	2	2	11
+unrelated	population	Miao	EAS	10	9	9	9	9	5	9	1	1	1	1	1	8
+unrelated	population	Mongolian	EAS	10	12	12	12	12	8	12	2	2	2	2	1	10
+unrelated	population	Naxi	EAS	7	10	10	10	10	7	10	2	2	2	2	1	12
+unrelated	population	NorthernHan	EAS	10	8	8	8	8	5	8	1	1	1	1	1	8
+unrelated	population	Oroqen	EAS	8	15	15	15	15	11	15	1	1	1	1	1	8
+unrelated	population	She	EAS	9	12	10	10	10	6	10	2	2	2	2	2	10
+unrelated	population	Tu	EAS	10	11	11	11	11	7	11	1	1	1	1	1	8
+unrelated	population	Tujia	EAS	10	10	10	10	10	6	10	1	1	1	1	1	8
+unrelated	population	Uygur	EAS	6	10	10	10	10	6	10	1	1	1	1	1	8
+unrelated	population	Xibo	EAS	9	12	12	12	12	6	12	1	1	1	1	1	8
+unrelated	population	Yakut	EAS	25	10	10	10	10	6	10	1	1	1	1	1	8
+unrelated	population	Yi	EAS	10	11	11	11	11	7	11	1	1	1	1	1	8
+unrelated	population	Adygei	EUR	17	15	15	15	15	10	15	3	3	3	3	2	13
+unrelated	population	Basque	EUR	22	16	15	15	15	10	15	1	1	1	1	1	8
+unrelated	population	BergamoItalian	EUR	11	12	12	12	12	9	12	1	1	1	1	1	8
+unrelated	population	CEU	EUR	121	25	25	24	24	16	24	4	4	4	4	2	13
+unrelated	population	FIN	EUR	98	16	16	16	16	12	16	3	3	3	3	2	10
+unrelated	population	French	EUR	27	17	17	17	17	11	17	2	2	2	2	2	9
+unrelated	population	GBR	EUR	88	16	16	16	16	10	16	3	3	3	3	2	11
+unrelated	population	IBS	EUR	104	21	21	21	21	14	21	3	3	3	3	2	11
+unrelated	population	Orcadian	EUR	14	10	10	10	10	7	10	1	1	1	1	1	8
+unrelated	population	Russian	EUR	25	14	14	14	14	10	14	2	2	2	2	2	9
+unrelated	population	Sardinian	EUR	27	14	14	14	14	8	14	1	1	1	1	1	8
+unrelated	population	TSI	EUR	103	25	25	24	24	15	24	5	5	5	5	2	14
+unrelated	population	Tuscan	EUR	8	12	12	11	11	7	11	1	1	1	1	1	8
+unrelated	population	Bedouin	MID	45	22	22	22	22	16	22	4	4	4	4	2	13
+unrelated	population	Druze	MID	40	17	17	17	17	10	17	3	3	3	3	2	12
+unrelated	population	Mozabite	MID	25	17	17	17	17	10	17	1	1	1	1	1	8
+unrelated	population	Palestinian	MID	40	20	20	20	20	14	20	3	3	3	3	2	10
+unrelated	population	Bougainville	OCE	10	11	10	10	10	7	10	1	1	1	1	1	8
+unrelated	population	PapuanHighlands	OCE	9	10	10	10	10	7	10	2	2	2	2	2	9
+unrelated	population	PapuanSepik	OCE	8	8	8	8	8	5	8	1	1	1	1	1	8
+all_eligible	all	ALL	""	4094	247	241	234	234	159	234	53	53	53	53	2	17
+all_eligible	group	AFR	AFR	989	89	88	85	85	61	85	16	16	16	16	2	17
+all_eligible	group	AMR	AMR	549	62	61	61	61	41	61	8	8	8	8	2	14
+all_eligible	group	CSA	CSA	782	69	68	67	67	42	67	12	12	12	12	2	17
+all_eligible	group	EAS	EAS	816	53	50	50	50	32	50	11	11	11	11	2	17
+all_eligible	group	EUR	EUR	770	50	49	46	46	31	46	11	11	11	11	2	17
+all_eligible	group	MID	MID	158	34	34	34	34	23	34	6	6	6	6	2	15
+all_eligible	group	OCE	OCE	30	13	12	12	12	9	12	2	2	2	2	2	9
+all_eligible	population	ACB	AFR	114	33	33	32	32	21	32	4	4	4	4	2	14
+all_eligible	population	ASW	AFR	71	31	31	31	31	22	31	5	5	5	5	2	13
+all_eligible	population	BantuKenya	AFR	12	15	15	15	15	10	15	3	3	3	3	2	13
+all_eligible	population	BantuSouthAfrica	AFR	8	15	15	14	14	8	14	2	2	2	2	1	10
+all_eligible	population	Biaka	AFR	26	25	24	24	24	15	24	3	3	3	3	2	13
+all_eligible	population	ESN	AFR	148	25	25	23	23	17	23	3	3	3	3	1	12
+all_eligible	population	GWD	AFR	176	27	27	27	27	21	27	5	5	5	5	2	13
+all_eligible	population	LWK	AFR	97	29	29	27	27	18	27	3	3	3	3	2	13
+all_eligible	population	MSL	AFR	98	26	26	25	25	16	25	3	3	3	3	2	13
+all_eligible	population	Mandenka	AFR	23	10	10	10	10	7	10	1	1	1	1	1	8
+all_eligible	population	Mbuti	AFR	14	12	12	12	12	9	12	1	1	1	1	1	8
+all_eligible	population	San	AFR	6	8	8	7	7	5	7	1	1	1	1	1	10
+all_eligible	population	YRI	AFR	175	31	31	30	30	18	30	6	6	6	6	2	14
+all_eligible	population	Yoruba	AFR	21	15	15	15	15	9	15	3	3	3	3	2	11
+all_eligible	population	CLM	AMR	130	33	33	33	33	20	33	3	3	3	3	2	11
+all_eligible	population	Colombian	AMR	7	8	8	8	8	5	8	1	1	1	1	1	8
+all_eligible	population	Karitiana	AMR	12	8	8	8	8	5	8	1	1	1	1	1	8
+all_eligible	population	MXL	AMR	97	19	19	19	19	12	19	2	2	2	2	1	11
+all_eligible	population	Maya	AMR	21	17	17	17	17	10	17	3	3	3	3	1	12
+all_eligible	population	PEL	AMR	122	17	16	16	16	10	16	2	2	2	2	2	9
+all_eligible	population	PUR	AMR	138	26	26	26	26	19	26	2	2	2	2	2	9
+all_eligible	population	Pima	AMR	14	10	10	10	10	6	10	1	1	1	1	1	8
+all_eligible	population	Surui	AMR	8	8	8	8	8	5	8	1	1	1	1	1	8
+all_eligible	population	BEB	CSA	131	19	19	19	19	11	19	3	3	3	3	2	10
+all_eligible	population	Balochi	CSA	23	14	14	13	13	9	13	3	3	3	3	2	11
+all_eligible	population	Brahui	CSA	23	13	13	13	13	8	13	2	2	2	2	2	9
+all_eligible	population	Burusho	CSA	24	11	11	11	11	8	11	2	2	2	2	2	9
+all_eligible	population	GIH	CSA	103	24	24	24	24	14	24	4	4	4	4	2	12
+all_eligible	population	Hazara	CSA	20	15	14	14	14	9	14	2	2	2	2	2	9
+all_eligible	population	ITU	CSA	106	24	24	24	24	15	24	5	5	5	5	2	13
+all_eligible	population	Kalash	CSA	23	11	11	11	11	8	11	1	1	1	1	1	8
+all_eligible	population	Makrani	CSA	23	13	13	13	13	8	13	2	2	2	2	2	10
+all_eligible	population	PJL	CSA	145	24	24	24	24	16	24	4	4	4	4	2	12
+all_eligible	population	Pathan	CSA	24	13	13	13	13	8	13	2	2	2	2	2	9
+all_eligible	population	STU	CSA	114	26	26	26	26	17	26	4	4	4	4	2	13
+all_eligible	population	Sindhi	CSA	23	12	12	12	12	9	12	3	3	3	3	2	11
+all_eligible	population	CDX	EAS	93	19	19	19	19	12	19	3	3	3	3	2	13
+all_eligible	population	CHB	EAS	103	19	19	19	19	12	19	3	3	3	3	2	13
+all_eligible	population	CHS	EAS	163	16	16	16	16	10	16	2	2	2	2	2	11
+all_eligible	population	Cambodian	EAS	10	8	8	8	8	5	8	1	1	1	1	1	8
+all_eligible	population	Dai	EAS	9	8	8	8	8	5	8	1	1	1	1	1	8
+all_eligible	population	Daur	EAS	9	8	8	8	8	5	8	1	1	1	1	1	8
+all_eligible	population	Han	EAS	33	12	11	11	11	7	11	3	3	3	3	2	11
+all_eligible	population	Hezhen	EAS	9	8	8	8	8	5	8	1	1	1	1	1	8
+all_eligible	population	JPT	EAS	102	17	17	17	17	11	17	5	5	5	5	2	12
+all_eligible	population	Japanese	EAS	29	12	12	12	12	7	12	2	2	2	2	1	10
+all_eligible	population	KHV	EAS	122	19	19	19	19	12	19	4	4	4	4	2	14
+all_eligible	population	Lahu	EAS	8	12	11	11	11	7	11	2	2	2	2	2	11
+all_eligible	population	Miao	EAS	10	9	9	9	9	5	9	1	1	1	1	1	8
+all_eligible	population	Mongolian	EAS	10	12	12	12	12	8	12	2	2	2	2	1	10
+all_eligible	population	Naxi	EAS	8	10	10	10	10	7	10	2	2	2	2	1	12
+all_eligible	population	NorthernHan	EAS	10	8	8	8	8	5	8	1	1	1	1	1	8
+all_eligible	population	Oroqen	EAS	8	15	15	15	15	11	15	1	1	1	1	1	8
+all_eligible	population	She	EAS	10	12	10	10	10	6	10	2	2	2	2	2	10
+all_eligible	population	Tu	EAS	10	11	11	11	11	7	11	1	1	1	1	1	8
+all_eligible	population	Tujia	EAS	10	10	10	10	10	6	10	1	1	1	1	1	8
+all_eligible	population	Uygur	EAS	6	10	10	10	10	6	10	1	1	1	1	1	8
+all_eligible	population	Xibo	EAS	9	12	12	12	12	6	12	1	1	1	1	1	8
+all_eligible	population	Yakut	EAS	25	10	10	10	10	6	10	1	1	1	1	1	8
+all_eligible	population	Yi	EAS	10	11	11	11	11	7	11	1	1	1	1	1	8
+all_eligible	population	Adygei	EUR	17	15	15	15	15	10	15	3	3	3	3	2	13
+all_eligible	population	Basque	EUR	22	16	15	15	15	10	15	1	1	1	1	1	8
+all_eligible	population	BergamoItalian	EUR	11	12	12	12	12	9	12	1	1	1	1	1	8
+all_eligible	population	CEU	EUR	176	25	25	24	24	16	24	4	4	4	4	2	13
+all_eligible	population	FIN	EUR	98	16	16	16	16	12	16	3	3	3	3	2	10
+all_eligible	population	French	EUR	27	17	17	17	17	11	17	2	2	2	2	2	9
+all_eligible	population	GBR	EUR	90	16	16	16	16	10	16	3	3	3	3	2	11
+all_eligible	population	IBS	EUR	151	21	21	21	21	14	21	3	3	3	3	2	11
+all_eligible	population	Orcadian	EUR	15	10	10	10	10	7	10	1	1	1	1	1	8
+all_eligible	population	Russian	EUR	25	14	14	14	14	10	14	2	2	2	2	2	9
+all_eligible	population	Sardinian	EUR	27	14	14	14	14	8	14	1	1	1	1	1	8
+all_eligible	population	TSI	EUR	103	25	25	24	24	15	24	5	5	5	5	2	14
+all_eligible	population	Tuscan	EUR	8	12	12	11	11	7	11	1	1	1	1	1	8
+all_eligible	population	Bedouin	MID	45	22	22	22	22	16	22	4	4	4	4	2	13
+all_eligible	population	Druze	MID	42	17	17	17	17	10	17	3	3	3	3	2	12
+all_eligible	population	Mozabite	MID	26	17	17	17	17	10	17	1	1	1	1	1	8
+all_eligible	population	Palestinian	MID	45	20	20	20	20	14	20	3	3	3	3	2	10
+all_eligible	population	Bougainville	OCE	13	11	10	10	10	7	10	1	1	1	1	1	8
+all_eligible	population	PapuanHighlands	OCE	9	10	10	10	10	7	10	2	2	2	2	2	9
+all_eligible	population	PapuanSepik	OCE	8	8	8	8	8	5	8	1	1	1	1	1	8

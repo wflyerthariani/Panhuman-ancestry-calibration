@@ -1,6 +1,6 @@
 exclusion_reason	n_records
-not_an_snv	4270
+not_an_snv	4269
 not_coding_missense	3272
 conflicting_classifications	3104
-uncertain_significance	2493
+uncertain_significance	2492
 other_or_no_classification	1094

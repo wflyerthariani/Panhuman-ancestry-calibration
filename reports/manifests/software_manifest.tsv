@@ -1,20 +1,20 @@
 kind	name	version
-platform	os	macOS-14.7.4-x86_64-i386-64bit
+platform	os	Linux-7.0.0-1014-aws-x86_64-with-glibc2.43
 platform	machine	x86_64
-platform	python	3.11.16
-platform	env_prefix	/Users/arman/miniforge3/envs/ancal
-code	ancal	ancal 0.1.0 @ 6876f11
+platform	python	3.11.17
+platform	env_prefix	/home/ubuntu/miniforge3/envs/ancal
+code	ancal	ancal 0.1.0 @ 2f71637
 tool	bcftools	bcftools 1.21
 tool	tabix	tabix (htslib) 1.21
 tool	bgzip	bgzip (htslib) 1.21
 tool	samtools	samtools 1.21
 tool	snakemake	8.30.0
-tool	conda	conda 25.3.0
-tool	git	git version 2.39.5 (Apple Git-154)
-python	polars	1.44.2
+tool	conda	conda 26.7.2
+tool	git	git version 2.53.0
+python	polars	2.0.0
 python	pyarrow	25.0.0
 python	pandas	3.0.6
-python	pydantic	2.13.5
+python	pydantic	2.14.1
 python	PyYAML	6.0.3
 python	requests	2.34.2
 python	fsspec	2026.9.0

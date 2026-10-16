@@ -1,0 +1,7 @@
+avi_join_class	n_variants	n_primary_snvs
+exact_allele_match	243	234
+corrected_representation_match	0	0
+allele_swapped_match	0	0
+multiple_possible_matches	0	0
+no_avi_score	7	0
+unresolved_allele_conflict	0	0

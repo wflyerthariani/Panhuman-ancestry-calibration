@@ -2,17 +2,17 @@
   "stage": "stage10",
   "status": "pass",
   "scope": "smoke",
-  "disk_used_mb": 53.0,
+  "disk_used_mb": 54.44,
   "checks": [
     {
       "name": "clinvar_records",
       "ok": true,
-      "detail": "release 20261004: 15,317 records in scope"
+      "detail": "release 20260928: 15,315 records in scope"
     },
     {
       "name": "every_record_classified",
       "ok": true,
-      "detail": "1,084 eligible or eligible pending AVI; 14,233 excluded"
+      "detail": "1,084 eligible or eligible pending AVI; 14,231 excluded"
     },
     {
       "name": "vus_not_benign",
@@ -22,7 +22,7 @@
     {
       "name": "missense_agrees_with_clinvar",
       "ok": true,
-      "detail": "MANE Select consequence agrees with ClinVar's MC for 10,986 of 11,046 coding SNV records"
+      "detail": "MANE Select consequence agrees with ClinVar's MC for 10,985 of 11,045 coding SNV records"
     },
     {
       "name": "unique_eligible_variants",
@@ -32,10 +32,10 @@
     {
       "name": "disk_budget",
       "ok": true,
-      "detail": "53.0 MB of 1.0 GB"
+      "detail": "54.4 MB of 1.0 GB"
     }
   ],
-  "notes": "ClinVar coding-missense eligibility report (item 12). ClinVar release 20261004.",
+  "notes": "ClinVar coding-missense eligibility report (item 12). ClinVar release 20260928.",
   "blocked_reason": "",
-  "written_at": "2026-10-12T16:23:43+00:00"
+  "written_at": "2026-10-16T03:57:37+00:00"
 }

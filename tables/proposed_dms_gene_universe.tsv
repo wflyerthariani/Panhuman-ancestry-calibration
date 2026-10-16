@@ -7,6 +7,7 @@ ADAR	ENSG00000160710.21	false	not_assessed	not_assessed_at_this_scope	""	2	0	0	0
 ADARB1	ENSG00000197381.20	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 ADNP	ENSG00000101126.20	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 ADSL	ENSG00000239900.16	false	not_assessed	not_assessed_at_this_scope	""	4	0	0	0	""	0			0	false	false	false	overlap_unknown
+AGXT	ENSG00000172482.7	false	not_assessed	not_assessed_at_this_scope	""	4	0	0	0	""	0			0	false	false	false	overlap_unknown
 AHI1	ENSG00000135541.24	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 AICDA	ENSG00000111732.13	false	not_assessed	not_assessed_at_this_scope	""	3	0	0	0	""	0			0	false	false	false	overlap_unknown
 AIRE	ENSG00000160224.18	false	not_assessed	not_assessed_at_this_scope	""	2	0	0	0	""	0			0	false	false	false	overlap_unknown
@@ -40,7 +41,7 @@ BAZ2B	ENSG00000123636.22	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	
 BLK	ENSG00000136573.17	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 BPTF	ENSG00000171634.20	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 BRAF	ENSG00000157764.16	false	not_assessed	not_assessed_at_this_scope	""	2	0	0	0	""	0			0	false	false	false	overlap_unknown
-BRCA1	ENSG00000012048.28	true	proposed_include	""	provisional_unreviewed_assays	9	5	5	5	urn:mavedb:00000003-a-1;urn:mavedb:00000003-a-2;urn:mavedb:00000081-a-2;urn:mavedb:00001222-a-2;urn:mavedb:00001222-b-2	2836	25		2836	true	true	true	overlap_unknown
+BRCA1	ENSG00000012048.28	true	proposed_include	""	provisional_unreviewed_assays	9	5	5	5	urn:mavedb:00000003-a-1;urn:mavedb:00000003-a-2;urn:mavedb:00000081-a-2;urn:mavedb:00001222-a-2;urn:mavedb:00001222-b-2	2836	25	25	2836	true	true	true	overlap_unknown
 BRCA2	ENSG00000139618.19	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 BRD4	ENSG00000141867.20	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 BTK	ENSG00000010671.20	false	not_assessed	not_assessed_at_this_scope	""	3	0	0	0	""	0			0	false	false	false	overlap_unknown
@@ -450,7 +451,7 @@ TNNC2	ENSG00000101470.11	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	
 TOE1	ENSG00000132773.14	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 TOP3A	ENSG00000177302.18	false	not_assessed	not_assessed_at_this_scope	""	2	0	0	0	""	0			0	false	false	false	overlap_unknown
 TOX3	ENSG00000103460.19	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
-TP53	ENSG00000141510.21	true	proposed_include	""	provisional_unreviewed_assays	14	12	12	12	urn:mavedb:00000059-a-1;urn:mavedb:00000068-b-1;urn:mavedb:00000068-c-1;urn:mavedb:00001213-a-1;urn:mavedb:00001234-a-1;urn:mavedb:00001234-b-1;urn:mavedb:00001234-c-1;urn:mavedb:00001234-d-1;urn:mavedb:00001234-e-1;urn:mavedb:00001234-f-1;urn:mavedb:00001234-g-1;urn:mavedb:00001234-h-1	2569	28		2569	true	true	true	overlap_unknown
+TP53	ENSG00000141510.21	true	proposed_include	""	provisional_unreviewed_assays	14	12	12	12	urn:mavedb:00000059-a-1;urn:mavedb:00000068-b-1;urn:mavedb:00000068-c-1;urn:mavedb:00001213-a-1;urn:mavedb:00001234-a-1;urn:mavedb:00001234-b-1;urn:mavedb:00001234-c-1;urn:mavedb:00001234-d-1;urn:mavedb:00001234-e-1;urn:mavedb:00001234-f-1;urn:mavedb:00001234-g-1;urn:mavedb:00001234-h-1	2569	28	28	2569	true	true	true	overlap_unknown
 TP63	ENSG00000073282.15	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 TP73	ENSG00000078900.18	false	not_assessed	not_assessed_at_this_scope	""	1	0	0	0	""	0			0	false	false	false	overlap_unknown
 TPK1	ENSG00000196511.17	false	not_assessed	not_assessed_at_this_scope	""	2	0	0	0	""	0			0	false	false	false	overlap_unknown

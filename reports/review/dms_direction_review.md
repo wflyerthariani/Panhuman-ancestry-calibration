@@ -298,7 +298,7 @@ C. What the authors say about the score:
 
 | Evidence | What it shows | Implied direction |
 |---|---|---|
-| A. Calibration | abnormal range(s) below normal range(s) — IGVF Coding Variant Focus Group -- Controls: All Variants; Investigator-provided functional classes; IGVF Coding Variant Focus Group -- Controls: Missense Variants Only; ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only] | lower_is_more_damaging |
+| A. Calibration | abnormal range(s) below normal range(s) — IGVF Coding Variant Focus Group -- Controls: Missense Variants Only; IGVF Coding Variant Focus Group -- Controls: All Variants; Investigator-provided functional classes; ExCALIBR calibration [research use only]; ExCALIBR calibration (ClinVar 2018) [research use only] | lower_is_more_damaging |
 | B. Controls | truncating (n=68, median -1.17) vs missense (n=1359, median -0.281); AUC 0.16 [weaker: no synonymous controls] | lower_is_more_damaging |
 
 C. What the authors say about the score:

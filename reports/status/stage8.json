@@ -1,10 +1,41 @@
 {
   "stage": "stage8",
-  "status": "blocked",
+  "status": "pass",
   "scope": "smoke",
-  "disk_used_mb": 53.0,
-  "checks": [],
+  "disk_used_mb": 54.43,
+  "checks": [
+    {
+      "name": "avi_records_in_scope",
+      "ok": true,
+      "detail": "20,304 records for 20,304 variants (tabix region query)"
+    },
+    {
+      "name": "avi_reference_build",
+      "ok": true,
+      "detail": "REF equals GRCh38 for 100.00% of 20,304 coding SNV records"
+    },
+    {
+      "name": "score_direction",
+      "ok": true,
+      "detail": "configured: higher_is_more_damaging; evidence: ['higher_is_more_damaging', 'higher_is_more_damaging']"
+    },
+    {
+      "name": "every_join_classified",
+      "ok": true,
+      "detail": "250 population variants; 243 with a valid AVI score"
+    },
+    {
+      "name": "coverage_in_range",
+      "ok": true,
+      "detail": "1,646 coverage rows"
+    },
+    {
+      "name": "disk_budget",
+      "ok": true,
+      "detail": "54.4 MB of 1.0 GB"
+    }
+  ],
   "notes": "AVI join and coverage report (item 8).",
-  "blocked_reason": "The AVI source is not configured: `sources.avi.uri` in config/data_sources.yaml is null. Access to the AlphaGenome Atlas AVI scores has not been arranged (L-02).",
-  "written_at": "2026-10-12T16:23:41+00:00"
+  "blocked_reason": "",
+  "written_at": "2026-10-16T03:57:36+00:00"
 }
