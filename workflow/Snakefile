@@ -52,7 +52,8 @@ rule stage3:
         "tables/sample_metadata.tsv",
         "tables/population_mapping.tsv",
         "tables/population_counts.tsv",
-        "config/population_groups.yaml",
+        # config/population_groups.yaml is also written, but not declared: Snakemake deletes declared
+        # outputs before a job runs, which left config/ briefly dirty (D-061).
         "reports/qc/sample_count_report.md",
     log:
         "logs/stage3.log",
@@ -79,7 +80,8 @@ rule stage5:
     output:
         "reports/status/stage5.json",
         "tables/dms_candidate_inventory.tsv",
-        "config/dms_curation.tsv",
+        # config/dms_curation.tsv is also written, but must not be declared: Snakemake would delete it
+        # before the job runs, and Stage 5 reads it to keep the reviewer's decisions (D-061).
         "reports/review/dms_direction_review.md",
         "reports/qc/dms_inventory_report.md",
     log:
