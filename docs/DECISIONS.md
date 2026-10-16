@@ -506,6 +506,27 @@ Changes from the previous committed run (2026-10-12):
   bound, with at most 16 in any group (D-048). In Stage 9, all of the population-observed harmonized
   missense SNVs have a valid AVI score: 25 of 25 for BRCA1 and 28 of 28 for TP53. The "AVI not available" PROVISIONAL notes are gone from the
   Stage 9 to 11 reports.
+- **Clean re-run:** after D-058 and D-059, Stages 1 to 11 were re-run from a clean tree (commit
+  `2f71637`). All stages pass, and no manifest row from that run is `-dirty`.
+
+**D-061 — Snakemake no longer deletes `config/dms_curation.tsv` (or `population_groups.yaml`)
+before a run. This could have lost reviewer decisions.** Both files were declared as Snakemake
+outputs (Stages 5 and 3), and Snakemake deletes a job's declared outputs before running it.
+Stage 5 keeps the reviewer columns (`reviewer_decision`, `reviewer_direction`,
+`reviewer_notes`, `reviewer_name`, `reviewed_on`) by reading the existing sheet
+(`merge_curation`). Under `make`, the sheet was already gone at that point, so a re-run would
+have reset every reviewer column to empty. How it was found and checked:
+- During the D-060 runs, a watcher polling `git status` every 0.5 s saw both files briefly
+  deleted. That also explains the five `-dirty` Stage 3 manifest rows at 03:39, recorded while
+  `population_groups.yaml` was missing.
+- A test wrote a marker into `reviewer_notes` for `urn:mavedb:00000003-a-1` and forced Stage 5.
+  Under the old Snakefile the marker was lost (1 → 0); under the new one it was kept (1 → 1).
+  The files were restored afterwards.
+
+No review had been done yet (0/23), so nothing was lost. Running `ancal stage5` directly was
+never affected. Both files are now written but not declared as outputs. They are tracked in
+git and always present, and Stage 6 still lists `dms_curation.tsv` as an input, so a
+reviewer's edit still re-runs Stage 6 onwards.
 
 **D-053 — Reference FASTA is the Broad GRCh38 genome** (`Homo_sapiens_assembly38.fasta` from
 `gs://gcp-public-data--broad-references/hg38/v0`, with `.fai`), replacing UCSC per-chromosome
