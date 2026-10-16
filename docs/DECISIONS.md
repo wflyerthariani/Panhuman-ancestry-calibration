@@ -435,6 +435,17 @@ R-14 and D-008. It covers every hg38 SNV.
 - **Licence:** the Atlas states the static AVI download is permissively licensed. It is "for
   research purposes only", not for diagnostic or medical decision-making.
 
+**D-057 — IUPAC ambiguity codes in a local reference become `N`.** The first Stage 4 run on the
+Broad FASTA (D-053) failed the D-023 alphabet check on chr17 (`ACGKNRSTWY`). The Broad file
+keeps the GRCh38 IUPAC codes; on chr17 there are 12, at 489,374 and between 83,126,310 and
+83,133,686. UCSC hg38 writes each of them as `N`; four of them were checked through the UCSC API.
+The local-FASTA extraction in `stages/reference.py` now turns any base other than `ACGTN` into
+`N` after uppercasing. With this change the extracted chr17 sequence is identical to the UCSC
+chr17 file (equal MD5 of the uppercased sequence), so outputs match what the UCSC source gave.
+The ACGTN check is kept unchanged. None of the 12 positions is in a smoke-scope region (TP53,
+BRCA1), and an `N` cannot match a variant REF allele, so no scored variant is affected. Other
+contigs will be converted the same way when they come into scope.
+
 **D-053 — Reference FASTA is the Broad GRCh38 genome** (`Homo_sapiens_assembly38.fasta` from
 `gs://gcp-public-data--broad-references/hg38/v0`, with `.fai`), replacing UCSC per-chromosome
 files (supersedes D-007). It is a single faidx-indexed file, so Stage 4 extracts each in-scope
@@ -442,6 +453,7 @@ contig with `samtools faidx` and then uppercases and bgzips it as before (D-023,
 primary chromosomes match GRCh38. chr17 is 83,257,441 bp, the same as UCSC, and the BRCA1
 bases checked agree. The Broad file adds alt, HLA and decoy contigs, which are never in
 scope. No change to results is expected; the D-023 length and alphabet checks still apply.
+IUPAC ambiguity codes are converted to `N` on extraction (D-057).
 
 **D-054 — ClinVar is pinned to the local 2026-09-28 release** (`clinvar.release: "20260928"`,
 the file's `##fileDate`; the other project's `provenance.json` lists it as 2026-09-29). This is

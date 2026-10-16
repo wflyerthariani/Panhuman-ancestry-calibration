@@ -40,7 +40,7 @@ def test_repo_configs_validate():
 
 def test_draft_has_pending_items():
     items = dict(config.deferred_items(config.load_analysis(REPO)))
-    assert items["avi_score"].status == "pending"
+    assert items["avi_score"].status != "confirmed"   # proposed once the AVI file is configured (D-056)
     assert items["dms_gene_universe"].status == "pending"
     assert items["population_groups.mapping"].settled_in == "stage3"
 

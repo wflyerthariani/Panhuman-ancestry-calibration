@@ -153,12 +153,14 @@ def fetch_reference(settings: Settings, uri_template: str, contig: str) -> Path:
     uri = uri_template.format(contig=contig)
     if "{contig}" not in uri_template:
         # One local, faidx-indexed genome FASTA instead of per-chromosome files: extract the contig.
+        # IUPAC ambiguity codes (kept in e.g. the Broad GRCh38 FASTA) become N, as in UCSC hg38 (D-057).
         if "://" in uri and not uri.startswith("file://"):
             raise ValueError("a whole-genome reference_fasta.uri must be a local path; remote sources need {contig} in the URI")
         path = uri.removeprefix("file://")
         if not provenance.recorded_row(settings, dest, uri):
             dest.parent.mkdir(parents=True, exist_ok=True)
-            cmd = (f"set -o pipefail; samtools faidx {path} {contig} | awk '/^>/ {{print; next}} {{print toupper($0)}}' "
+            cmd = (f"set -o pipefail; samtools faidx {path} {contig} "
+                   f"| awk '/^>/ {{print; next}} {{s = toupper($0); gsub(/[^ACGTN]/, \"N\", s); print s}}' "
                    f"| bgzip -c > {dest}")
             subprocess.run(["bash", "-c", cmd], check=True)
             provenance.record(settings, dest, stage="stage4", source_name=f"GRCh38 {contig} (from local genome FASTA)",
