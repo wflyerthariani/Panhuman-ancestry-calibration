@@ -90,14 +90,14 @@ dms_score:
       MaveDB score sets). Where only replicate-level scores exist, take their mean.
 
 avi_score:
-  status: pending
+  status: proposed                # values from the file and the Atlas docs (D-056); Stage 8 confirms direction
   settled_in: stage8
   value:
-    source: AlphaGenome Atlas - Aggregate Variant Impact (AVI)
-    version: null
-    score_field: null
-    score_range: null
-    native_direction: null        # higher_is_more_damaging | lower_is_more_damaging
+    source: AlphaGenome Atlas - AlphaGenome Variant Impact (AVI)
+    version: avi_scores_snvs_tabix.zip, downloaded 2026-10-14   # the Atlas gives no release number
+    score_field: raw_score
+    score_range: about -1.3 to 4.0 (PHRED column 0 to about 80)
+    native_direction: higher_is_more_damaging        # higher_is_more_damaging | lower_is_more_damaging
     transform: null               # documented if the native direction is reversed
     transcript_specific: null
     multiple_scores_per_variant: null
@@ -112,7 +112,7 @@ missing_score_definition:
     chrom:pos:ref:alt on GRCh38, or the record's score is null or NaN. Variants
     whose join is ambiguous or unresolved are counted separately and are not
     counted as scored.
-  note: "May need revision once the AVI file format is known."
+  note: "The AVI file is keyed by chrom:pos:ref:alt (#CHROM POS REF ALT raw_score PHRED; one row per variant in the windows checked), so this applies as written. Stage 8 counts any duplicates (D-045, D-056)."
 
 allele_frequency_bins:   # Step 16: global AF from the combined HGDP+1KG resource
   frequency_source: global_combined
@@ -162,7 +162,7 @@ clinvar:                   # Step 29
   release:
     status: proposed
     settled_in: stage4
-    value: resolve_latest_at_fetch
+    value: "20260928"       # local file, data_sources.yaml clinvar.release (D-054)
     note: "Stage 4 records the dated weekly release actually fetched; that date is frozen."
   consequence: missense
   positive_class: [Pathogenic, Likely_pathogenic, Pathogenic/Likely_pathogenic]

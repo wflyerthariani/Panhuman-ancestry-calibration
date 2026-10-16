@@ -2,6 +2,9 @@
 # See SCALING_UP.md before changing scope or storage.
 # URIs were checked on 2026-09-26. Each is fetched and recorded in the manifest
 # by the stage that uses it.
+# Local copies (2026-10-14): /home/ubuntu/ancal_inputs/ holds correctly named symlinks into
+# /home/ubuntu/gv-foundation-model/data/raw/ (the originals have no file extensions) plus the
+# ClinVar tabix index. See SCALING_UP.md section 0 and docs/DECISIONS.md D-049.
 
 # smoke | dms_genes | exome
 scope: smoke
@@ -51,7 +54,9 @@ sources:
 
   sample_metadata:
     name: gnomAD HGDP+1KG sample metadata and QC (v2 release, Koenig et al. 2024)
-    uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/metadata_and_qc/gnomad_meta_updated.tsv
+    # Local copy of the URL below (gsutil log: gv-foundation-model/data/raw/onekg_meta_v2.log).
+    # Remote: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/metadata_and_qc/gnomad_meta_updated.tsv
+    uri: /home/ubuntu/ancal_inputs/gnomad_meta_updated.tsv
     qc_summary_uri: https://storage.googleapis.com/gcp-public-data--gnomad/release/3.1/secondary_analyses/hgdp_1kg_v2/metadata_and_qc/post_qc_summary.tsv
     # Koenig et al. post-QC sample set = the samples in the global PCA "without outliers"
     # (4,094 samples, 80 populations), with 20 PCs per sample.
@@ -65,10 +70,11 @@ sources:
     access: download   # about 6 MB in total
 
   reference_fasta:
-    name: UCSC hg38 per-chromosome FASTA (GRCh38 primary assembly)
-    # Fetched per contig in scope, then uppercased, bgzipped and faidx-indexed.
-    uri: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/{contig}.fa.gz
-    access: download_per_contig   # chr17 is about 25 MB compressed
+    name: Broad GRCh38 genome FASTA (Homo_sapiens_assembly38, gs://gcp-public-data--broad-references/hg38/v0)
+    # Local whole-genome FASTA with .fai; each in-scope contig is extracted, uppercased and bgzipped.
+    # Remote per-contig alternative: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/{contig}.fa.gz
+    uri: /home/ubuntu/ancal_inputs/Homo_sapiens_assembly38.fasta
+    access: local
 
   gene_annotation:
     name: GENCODE basic annotation
@@ -78,7 +84,9 @@ sources:
 
   alphamissense:
     name: AlphaMissense hg38 precomputed missense predictions
-    uri: https://storage.googleapis.com/dm_alphamissense/AlphaMissense_hg38.tsv.gz
+    # Local copy of the URL below (release 2023-08-03, sha256 0516cfd7...).
+    # Remote: https://storage.googleapis.com/dm_alphamissense/AlphaMissense_hg38.tsv.gz
+    uri: /home/ubuntu/ancal_inputs/AlphaMissense_hg38.tsv.gz
     access: stream_filter   # about 640 MB streamed; only in-scope rows kept
     use: protein-to-genomic coordinate lookup only (AlphaMissense is a component of AVI; see leakage notes)
 
@@ -86,8 +94,10 @@ sources:
     name: ClinVar GRCh38 VCF
     # "latest" is read only to learn its ##fileDate. Data is then read from the dated file,
     # so the release is fixed even if the weekly file is replaced mid-run.
-    uri: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz
-    release: latest          # or a pinned date, e.g. "20260923"
+    # Local copy: ##fileDate=2026-09-28 (the last smoke run used 20261004, D-051).
+    # Remote: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz
+    uri: /home/ubuntu/ancal_inputs/clinvar_20260928.vcf.gz
+    release: "20260928"      # pinned to the local file's ##fileDate
     dated_uris:              # tried in order; archive_2.0 is the permanent location
       - https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar_{date}.vcf.gz
       - https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/weekly/clinvar_{date}.vcf.gz
@@ -114,13 +124,18 @@ sources:
     used_in: deliverable 2 only (the comparator is not run in deliverable 1)
 
   avi:
-    name: AlphaGenome Atlas - Aggregate Variant Impact (AVI)
-    uri: null            # set when access is confirmed; see SCALING_UP.md section 3
-    format: null         # tsv | csv | parquet | vcf
-    score_field: null    # column (or VCF INFO tag) holding the AVI score
-    direction: null      # higher_is_more_damaging | lower_is_more_damaging
+    name: AlphaGenome Atlas - AlphaGenome Variant Impact (AVI)
+    # Static download (bgzipped TSV + tabix index, all hg38 SNVs) from
+    # https://deepmind.google.com/science/alphagenome/downloads (Google sign-in). Two scores per
+    # variant: raw (about -1.3 to 4.0) and PHRED (0 to about 80; 20 = top 1% genome-wide).
+    # avi_scores_snvs_tabix.zip (88,473,344,811 bytes) downloaded 2026-10-14 and unpacked here.
+    # Columns: #CHROM POS REF ALT raw_score PHRED (chr-prefixed, chr1-22, X, Y).
+    uri: /scratch/data/alphagenome_avi/alphagenome_variant_impact_score_snvs.tsv.gz
+    format: tsv          # bgzipped, tabix-indexed (.tbi beside it): read by region
+    score_field: raw_score   # PHRED is a rank transform of raw_score (D-056)
+    direction: higher_is_more_damaging   # Atlas paper Fig. 1C and Ensembl VEP docs; Stage 8 re-checks
     # Optional. Column names, if they are not CHROM/POS/REF/ALT (any case):
     # columns: {chrom: chromosome, pos: position, ref: ref_allele, alt: alt_allele, transcript: transcript_id}
     # damaging_threshold: 0.5    # only if the Atlas defines one (Step 31)
     index_suffix: .tbi   # tsv/vcf only: used for region access when <uri><suffix> exists
-    access: null
+    access: local_tabix    # local file + .tbi; read by region
